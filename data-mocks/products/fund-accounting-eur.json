@@ -1,0 +1,292 @@
+{
+  "id": "prod:fund-accounting-eur",
+  "product_type": "FundAccounting",
+  "currency": "EUR",
+  "config": {
+    "fund_types_supported": [
+      "ucits",
+      "aif",
+      "hedge_fund",
+      "private_equity",
+      "real_estate",
+      "money_market",
+      "pension_fund"
+    ],
+    "accounting_standards": [
+      "IFRS",
+      "US_GAAP",
+      "Luxembourg_GAAP",
+      "Irish_GAAP"
+    ],
+    "services": {
+      "nav_calculation": true,
+      "portfolio_accounting": true,
+      "financial_reporting": true,
+      "regulatory_reporting": true,
+      "expense_management": true,
+      "capital_activity_processing": true,
+      "investor_services": true,
+      "tax_accounting": true,
+      "performance_attribution": true,
+      "compliance_monitoring": true
+    },
+    "nav_calculation": {
+      "frequency_options": ["daily", "weekly", "monthly", "quarterly"],
+      "calculation_time": "18:00 CET",
+      "pricing_sources": ["bloomberg", "reuters", "vendor_feeds", "broker_quotes", "manual"],
+      "multi_class_support": true,
+      "side_pocket_support": true,
+      "equalization_support": true,
+      "swing_pricing": true,
+      "anti_dilution_levy": true,
+      "accrual_basis": "daily",
+      "nav_publication_deadline": "T+1 09:00 CET",
+      "shadow_nav": true,
+      "estimated_nav": true
+    },
+    "portfolio_accounting": {
+      "chart_of_accounts": "customizable",
+      "multi_currency": true,
+      "functional_currency": "EUR",
+      "currencies_supported": ["EUR", "USD", "GBP", "CHF", "JPY", "AUD", "CAD", "SEK", "NOK", "DKK"],
+      "fx_rates_source": "ECB",
+      "fx_valuation_time": "16:00 CET",
+      "cost_basis_methods": ["FIFO", "LIFO", "average_cost", "specific_identification"],
+      "amortization_methods": ["straight_line", "effective_interest_rate"],
+      "booking_models": ["trade_date", "settlement_date", "configurable"]
+    },
+    "asset_classes_supported": [
+      "equities",
+      "fixed_income",
+      "derivatives",
+      "fx_forwards",
+      "futures",
+      "options",
+      "swaps",
+      "mutual_funds",
+      "etfs",
+      "private_equity",
+      "real_estate",
+      "commodities",
+      "cryptocurrencies",
+      "cash_equivalents"
+    ],
+    "financial_reporting": {
+      "balance_sheet": true,
+      "income_statement": true,
+      "cash_flow_statement": true,
+      "statement_of_changes": true,
+      "portfolio_schedule": true,
+      "trial_balance": true,
+      "general_ledger": true,
+      "sub_ledger_detail": true,
+      "frequency": ["daily", "monthly", "quarterly", "semi_annual", "annual"],
+      "audit_support": true,
+      "draft_financials": true,
+      "footnotes_preparation": true
+    },
+    "regulatory_reporting": {
+      "ucits_annex_iv": true,
+      "aifmd_annex_iv": true,
+      "mmf_regulation": true,
+      "emir_reporting": true,
+      "sftr_reporting": true,
+      "mifid_ii_reporting": true,
+      "fatca_crs": true,
+      "local_regulatory": ["bafin", "amf", "fca", "cssf"],
+      "central_bank_reporting": true,
+      "statistical_reporting": true
+    },
+    "expense_management": {
+      "accrual_tracking": true,
+      "management_fee_calculation": true,
+      "performance_fee_calculation": true,
+      "crystallization_support": true,
+      "high_water_mark": true,
+      "hurdle_rate_support": true,
+      "expense_allocation": true,
+      "multi_class_allocation": true,
+      "third_party_expense_processing": true,
+      "expense_capping": true
+    },
+    "capital_activity": {
+      "subscriptions": true,
+      "redemptions": true,
+      "transfers": true,
+      "distributions": true,
+      "dividend_reinvestment": true,
+      "in_specie_transfers": true,
+      "capital_calls": true,
+      "return_of_capital": true,
+      "multi_tranche_support": true,
+      "automated_processing": true,
+      "aml_screening_integration": true
+    },
+    "investor_services": {
+      "shareholder_register": true,
+      "investor_reporting": true,
+      "capital_statements": true,
+      "tax_reporting": true,
+      "k1_preparation": true,
+      "distribution_notices": true,
+      "investor_portal": true,
+      "document_management": true
+    },
+    "reconciliation": {
+      "cash_reconciliation": true,
+      "position_reconciliation": true,
+      "nav_reconciliation": true,
+      "frequency": "daily",
+      "automated_matching": true,
+      "break_management": true,
+      "tolerance_thresholds": true,
+      "multi_party_reconciliation": ["custodian", "administrator", "prime_broker", "transfer_agent"]
+    },
+    "performance_measurement": {
+      "time_weighted_return": true,
+      "money_weighted_return": true,
+      "gross_return": true,
+      "net_return": true,
+      "benchmark_comparison": true,
+      "attribution_analysis": true,
+      "risk_metrics": ["sharpe_ratio", "sortino_ratio", "max_drawdown", "volatility", "var", "tracking_error"],
+      "gips_compliant": true
+    },
+    "tax_services": {
+      "withholding_tax": true,
+      "reclaim_processing": true,
+      "treaty_rate_application": true,
+      "tax_lot_accounting": true,
+      "realized_gains_losses": true,
+      "unrealized_gains_losses": true,
+      "tax_equalization": true,
+      "country_specific": ["us_tax", "uk_tax", "german_tax", "irish_tax", "luxembourg_tax"]
+    },
+    "pricing_valuation": {
+      "independent_pricing": true,
+      "pricing_committee": true,
+      "fair_value_procedures": true,
+      "hard_to_value_assets": true,
+      "level_1_2_3_classification": true,
+      "valuation_model_support": true,
+      "third_party_valuations": true,
+      "pricing_escalation_process": true,
+      "tolerance_monitoring": true
+    },
+    "technology": {
+      "platform": "SimCorp_Dimension",
+      "alternatives": ["SS&C_Geneva", "FIS_Investran", "Northern_Trust_Hedgevision"],
+      "connectivity": ["swift", "sftp", "api", "portal"],
+      "api_available": true,
+      "real_time_data": true,
+      "data_warehouse": true,
+      "business_intelligence": true,
+      "portal_access": true,
+      "mobile_access": false
+    },
+    "reporting_delivery": {
+      "methods": ["sftp", "swift", "email", "portal", "api"],
+      "formats": ["pdf", "excel", "csv", "xml", "json"],
+      "custom_reports": true,
+      "ad_hoc_queries": true,
+      "data_extract_service": true,
+      "report_automation": true
+    },
+    "fees": {
+      "base_fee_bps": 5.0,
+      "base_fee_min_annual": 50000,
+      "base_fee_currency": "EUR",
+      "tiered_pricing": true,
+      "pricing_tiers": [
+        {"aum_threshold": 100000000, "bps": 5.0},
+        {"aum_threshold": 500000000, "bps": 4.0},
+        {"aum_threshold": 1000000000, "bps": 3.0}
+      ],
+      "additional_fees": {
+        "share_class_fee": 5000,
+        "regulatory_reporting_fee": 10000,
+        "audit_support_fee": 15000,
+        "custom_reporting_fee": 2500
+      },
+      "billing_frequency": "quarterly",
+      "billing_in_arrears": true,
+      "billing_currency": "EUR"
+    },
+    "operational": {
+      "nav_strike_time": "18:00 CET",
+      "reporting_deadline": "T+1 12:00 CET",
+      "data_cut_off": "17:00 CET",
+      "exception_handling": true,
+      "dedicated_fund_accountant": true,
+      "backup_coverage": true,
+      "escalation_procedures": true,
+      "change_management": true
+    },
+    "compliance_monitoring": {
+      "investment_restrictions": true,
+      "leverage_monitoring": true,
+      "liquidity_monitoring": true,
+      "concentration_limits": true,
+      "eligible_assets_monitoring": true,
+      "borrowing_limits": true,
+      "pre_trade_compliance": false,
+      "post_trade_compliance": true,
+      "breach_reporting": true,
+      "compliance_calendar": true
+    },
+    "risk_controls": {
+      "four_eyes_principle": true,
+      "maker_checker_workflow": true,
+      "audit_trail": true,
+      "access_controls": true,
+      "segregation_of_duties": true,
+      "data_encryption": true,
+      "disaster_recovery": true,
+      "business_continuity": true,
+      "soc1_type2": true,
+      "soc2_type2": true,
+      "isae3402": true
+    },
+    "documentation_required": [
+      "fund_administration_agreement",
+      "fund_prospectus",
+      "constitutional_documents",
+      "investment_management_agreement",
+      "custody_agreement",
+      "fee_schedule",
+      "chart_of_accounts",
+      "accounting_policies",
+      "authorized_signatories",
+      "data_delivery_specifications",
+      "reporting_requirements"
+    ],
+    "onboarding": {
+      "typical_timeline_weeks": 8,
+      "data_conversion": true,
+      "historical_data_load": true,
+      "parallel_runs": true,
+      "uat_environment": true,
+      "training_provided": true,
+      "documentation_provided": true
+    },
+    "sla": {
+      "nav_delivery_time": "T+1 09:00 CET",
+      "nav_accuracy": 99.95,
+      "report_delivery_on_time": 99.5,
+      "reconciliation_completion": "T+1 12:00 CET",
+      "query_response_time_hours": 2,
+      "system_availability": 99.9,
+      "data_accuracy": 99.99,
+      "error_correction_time_hours": 4
+    },
+    "support": {
+      "business_hours": "07:00-19:00 CET",
+      "phone_support": true,
+      "email_support": true,
+      "dedicated_relationship_manager": true,
+      "escalation_hotline": true,
+      "quarterly_business_reviews": true,
+      "annual_service_review": true
+    }
+  }
+}
