@@ -1,0 +1,16 @@
+# Binaries
+/bin/
+/dsl-go
+
+# Generated data
+/data/
+*.sexpr
+
+# Ignore example files from the *.sexpr rule
+!/examples/*.sexpr
+
+# User-specific settings
+.claude/
+
+# Ensure all markdown files are tracked
+!*.md

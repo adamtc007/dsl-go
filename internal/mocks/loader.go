@@ -25,14 +25,13 @@ func NewLoader(basePath string) *Loader {
 // NewDefaultLoader creates a loader using the default data-mocks directory
 func NewDefaultLoader() *Loader {
 	return &Loader{
-		basePath: "./data-mocks",
+		basePath: "",
 	}
 }
 
 // LoadEntity loads a single entity from a JSON file
 func (l *Loader) LoadEntity(filename string) (*generator.ClientEntity, error) {
-	path := filepath.Join(l.basePath, "entities", filename)
-	data, err := os.ReadFile(path)
+	data, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read entity file %s: %w", filename, err)
 	}
@@ -47,8 +46,7 @@ func (l *Loader) LoadEntity(filename string) (*generator.ClientEntity, error) {
 
 // LoadProduct loads a single product from a JSON file
 func (l *Loader) LoadProduct(filename string) (*generator.ProductSpec, error) {
-	path := filepath.Join(l.basePath, "products", filename)
-	data, err := os.ReadFile(path)
+	data, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read product file %s: %w", filename, err)
 	}
@@ -63,8 +61,7 @@ func (l *Loader) LoadProduct(filename string) (*generator.ProductSpec, error) {
 
 // LoadScenario loads a complete scenario from a JSON file
 func (l *Loader) LoadScenario(filename string) (*generator.GenerateRequest, error) {
-	path := filepath.Join(l.basePath, "scenarios", filename)
-	data, err := os.ReadFile(path)
+	data, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read scenario file %s: %w", filename, err)
 	}
@@ -85,7 +82,7 @@ func (l *Loader) LoadAllEntities() ([]generator.ClientEntity, error) {
 		return nil, fmt.Errorf("failed to read entities directory: %w", err)
 	}
 
-	var entities []generator.ClientEntity
+	entities := make([]generator.ClientEntity, 0, len(files))
 	for _, file := range files {
 		if file.IsDir() || !strings.HasSuffix(file.Name(), ".json") {
 			continue
@@ -109,7 +106,7 @@ func (l *Loader) LoadAllProducts() ([]generator.ProductSpec, error) {
 		return nil, fmt.Errorf("failed to read products directory: %w", err)
 	}
 
-	var products []generator.ProductSpec
+	products := make([]generator.ProductSpec, 0, len(files))
 	for _, file := range files {
 		if file.IsDir() || !strings.HasSuffix(file.Name(), ".json") {
 			continue
@@ -198,7 +195,7 @@ func (l *Loader) LoadEntitiesByRole(role generator.ClientRole) ([]generator.Clie
 
 // BuildCustomScenario builds a custom scenario by selecting specific entities and products
 func (l *Loader) BuildCustomScenario(requestID string, entityFiles []string, productFiles []string) (*generator.GenerateRequest, error) {
-	var entities []generator.ClientEntity
+	entities := make([]generator.ClientEntity, 0, len(entityFiles))
 	for _, filename := range entityFiles {
 		entity, err := l.LoadEntity(filename)
 		if err != nil {
@@ -207,7 +204,7 @@ func (l *Loader) BuildCustomScenario(requestID string, entityFiles []string, pro
 		entities = append(entities, *entity)
 	}
 
-	var products []generator.ProductSpec
+	products := make([]generator.ProductSpec, 0, len(productFiles))
 	for _, filename := range productFiles {
 		product, err := l.LoadProduct(filename)
 		if err != nil {
@@ -221,7 +218,7 @@ func (l *Loader) BuildCustomScenario(requestID string, entityFiles []string, pro
 		TenantID:  "default",
 		Entities:  entities,
 		Products:  products,
-		Metadata:  make(map[string]string),
+		Metadata:  make(map[string]interface{}),
 	}, nil
 }
 

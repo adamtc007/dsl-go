@@ -16,51 +16,52 @@ const (
 
 // ClientEntity represents a legal entity being onboarded with their role
 type ClientEntity struct {
-	ID         string                 // Unique identifier (e.g., "le:ACME")
-	Name       string                 // Legal name
-	Role       ClientRole             // Role in the relationship
-	EntityType string                 // LegalEntity, Individual, etc.
-	LEI        string                 // Legal Entity Identifier (optional)
-	Country    string                 // Jurisdiction/Country code
-	Attributes map[string]interface{} // Additional attributes
+	ID         string                 `json:"id"`          // Unique identifier (e.g., "le:ACME")
+	Name       string                 `json:"name"`        // Legal name
+	Role       ClientRole             `json:"role"`        // Role in the relationship
+	EntityType string                 `json:"entity_type"` // LegalEntity, Individual, etc.
+	LEI        string                 `json:"lei"`         // Legal Entity Identifier (optional)
+	Country    string                 `json:"country"`     // Jurisdiction/Country code
+	Attributes map[string]interface{} `json:"attributes"`  // Additional attributes
 }
 
 // ProductSpec represents a product/service the client has contracted
 type ProductSpec struct {
-	ID          string                 // Product identifier (e.g., "prod:custody-eur")
-	ProductType string                 // custody, investment-management, reporting, etc.
-	Currency    string                 // Currency if applicable
-	Config      map[string]interface{} // Product-specific configuration
+	ID          string                 `json:"id"`           // Product identifier (e.g., "prod:custody-eur")
+	ProductType string                 `json:"product_type"` // custody, investment-management, reporting, etc.
+	Currency    string                 `json:"currency"`     // Currency if applicable
+	Config      map[string]interface{} `json:"config"`       // Product-specific configuration
 }
 
 // ResourceSpec represents a resource to be created during onboarding
 type ResourceSpec struct {
-	ID       string                 // Resource identifier
-	Type     string                 // Resource type (CustodySafekeeping, Account, etc.)
-	Requires []string               // IDs of entities/resources this depends on
-	Config   map[string]interface{} // Resource configuration
+	ID       string                 `json:"id"`       // Resource identifier
+	Type     string                 `json:"type"`     // Resource type (CustodySafekeeping, Account, etc.)
+	Requires []string               `json:"requires"` // IDs of entities/resources this depends on
+	Config   map[string]interface{} `json:"config"`   // Resource configuration
 }
 
 // GenerateRequest contains all data needed to generate a populated DSL instance
 type GenerateRequest struct {
-	RequestID string            // Unique onboarding request ID
-	TenantID  string            // Multi-tenant identifier
-	Entities  []ClientEntity    // Client entities with their roles
-	Products  []ProductSpec     // Products being onboarded
-	Resources []ResourceSpec    // Resources to create
-	Metadata  map[string]string // Additional metadata
+	RequestID string                 `json:"request_id"` // Unique onboarding request ID
+	TenantID  string                 `json:"tenant_id"`  // Multi-tenant identifier
+	Entities  []ClientEntity         `json:"entities"`   // Client entities with their roles
+	Products  []ProductSpec          `json:"products"`   // Products being onboarded
+	Resources []ResourceSpec         `json:"resources"`  // Resources to create
+	Metadata  map[string]interface{} `json:"metadata"`   // Additional metadata (supports nested objects)
+	Now       time.Time              `json:"-"`          // The current time, for use in templates
 }
 
 // GenerateResponse contains the generated DSL and metadata
 type GenerateResponse struct {
-	RequestID      string    // The request ID
-	DSL            string    // Generated S-expression DSL
-	Version        uint64    // Version number (typically 1 for new)
-	Hash           string    // Content hash
-	GeneratedAt    time.Time // When it was generated
-	EntitiesAdded  int       // Count of entities
-	ResourcesAdded int       // Count of resources
-	FlowsGenerated int       // Count of flows generated
+	RequestID      string    `json:"request_id"`      // The request ID
+	DSL            string    `json:"dsl"`             // Generated S-expression DSL
+	Version        uint64    `json:"version"`         // Version number (typically 1 for new)
+	Hash           string    `json:"hash"`            // Content hash
+	GeneratedAt    time.Time `json:"generated_at"`    // When it was generated
+	EntitiesAdded  int       `json:"entities_added"`  // Count of entities
+	ResourcesAdded int       `json:"resources_added"` // Count of resources
+	FlowsGenerated int       `json:"flows_generated"` // Count of flows generated
 }
 
 // ValidationError represents an error during validation

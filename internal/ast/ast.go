@@ -1,139 +1,207 @@
 package ast
 
-import "time"
+import (
+	"time"
+
+	"github.com/alecthomas/participle/v2/lexer"
+)
 
 type Request struct {
-	Meta         *Meta        `json:"meta"`
-	Orchestrator Orchestrator `json:"orchestrator"`
-	Catalog      *Catalog     `json:"catalog,omitempty"`
+	Pos lexer.Position
+
+	Meta         *Meta         `parser:"'(' 'onboarding-request' @@"`
+	Orchestrator *Orchestrator `parser:"@@"`
+	Catalog      *Catalog      `parser:"@@? ')'"`
 }
 
 type Meta struct {
-	RequestID string    `json:"request_id"`
-	Version   uint64    `json:"version"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	Pos lexer.Position
+
+	RequestID string    `parser:"'(' ':meta' '(' 'request-id' @String ')'"`
+	Version   uint64    `parser:"'(' 'version' @Int ')'"`
+	CreatedAt time.Time `parser:"('(' 'created-at' @String ')')?"`
+	UpdatedAt time.Time `parser:"('(' 'updated-at' @String ')')? ')'"`
 }
 
 type Orchestrator struct {
-	Lifecycle Lifecycle         `json:"lifecycle"`
-	Entities  map[string]Entity   `json:"entities"`
-	Resources map[string]Resource `json:"resources"`
-	Flows     map[string]Flow     `json:"flows"`
-	Policies  []Policy          `json:"policies,omitempty"`
+	Pos lexer.Position
+
+	Lifecycle *Lifecycle  `parser:"'(' ':orchestrator' @@"`
+	Entities  []*Entity   `parser:"@@*"`
+	Resources []*Resource `parser:"@@*"`
+	Flows     []*Flow     `parser:"@@*"`
+	Policies  []*Policy   `parser:"@@* ')'"`
 }
 
 type Lifecycle struct {
-	States      []string     `json:"states"`
-	Initial     string       `json:"initial"`
-	Transitions []Transition `json:"transitions"`
+	Pos lexer.Position
+
+	States      []string      `parser:"'(' ':lifecycle' '(' 'states' @Ident* ')'"`
+	Initial     string        `parser:"'(' 'initial' @Ident ')'"`
+	Transitions []*Transition `parser:"'(' 'transitions' @@* ')' ')'"`
 }
 
 type Transition struct {
-	From    string       `json:"from"`
-	To      string       `json:"to"`
-	Guard   *Expr        `json:"guard,omitempty"`
-	Effects []ActionCall `json:"effects,omitempty"`
+	Pos lexer.Position
+
+	From    string        `parser:"'(' '->' @Ident"`
+	To      string        `parser:"@Ident"`
+	Guard   *Expr         `parser:"@@?"`
+	Effects []*ActionCall `parser:"'(' 'do' @@* ')'? ')'"`
 }
 
 type ActionCall struct {
-	Name string                 `json:"name"`
-	Args map[string]interface{} `json:"args,omitempty"`
+	Pos lexer.Position
+
+	Name string    `parser:"'(' @Ident"`
+	Args []*KVPair `parser:"@@* ')'"`
 }
 
 type Entity struct {
-	ID    string            `json:"id"`
-	Typ   string            `json:"typ"`
-	Attrs map[string]AttrVal `json:"attrs"`
+	Pos lexer.Position
+
+	ID    string     `parser:"'(' ':entities' '(' 'entity' ':id' @String"`
+	Typ   string     `parser:"':type' @Ident"`
+	Attrs []*AttrVal `parser:"'(' 'attrs' @@* ')' ')' ')'"`
 }
 
 type AttrVal struct {
-	Value      interface{} `json:"value"`
-	Provenance *string     `json:"provenance,omitempty"`
-	NeededBy   []string    `json:"needed_by,omitempty"`
+	Pos lexer.Position
+
+	Key        string   `parser:"'(' @Ident"`
+	Value      *Value   `parser:"@@"`
+	Provenance *string  `parser:"(':provenance' @String)?"`
+	NeededBy   []string `parser:"(':needed-by' '(' @Ident* ')')? ')'"`
 }
 
 type Resource struct {
-	ID       string                 `json:"id"`
-	Typ      string                 `json:"typ"`
-	Requires []RequireItem          `json:"requires,omitempty"`
-	Config   map[string]interface{} `json:"config,omitempty"`
+	Pos lexer.Position
+
+	ID       string         `parser:"'(' ':resources' '(' 'resource' ':id' @String"`
+	Typ      string         `parser:"':type' @Ident"`
+	Requires []*RequireItem `parser:"('(' 'requires' @@* ')')?"`
+	Config   []*KVPair      `parser:"('(' 'config' @@* ')')? ')' ')'"`
 }
 
 type RequireItem struct {
-	Kind string `json:"kind"` // "entity" or "attr"
-	ID   string `json:"id"`   // id or refpath
+	Pos lexer.Position
+
+	Kind string `parser:"'(' @'entity'"`
+	ID   string `parser:"@String ')'"`
 }
 
 type Flow struct {
-	ID    string  `json:"id"`
-	Doc   *string `json:"doc,omitempty"`
-	Steps []Step  `json:"steps"`
+	Pos lexer.Position
+
+	ID    string  `parser:"'(' ':flows' '(' 'flow' ':id' @String"`
+	Doc   *string `parser:"(@String)?"`
+	Steps []*Step `parser:"'(' 'steps' @@* ')' ')' ')'"`
 }
 
 type Step struct {
-	Kind string `json:"kind"` // "task"|"gate"|"fork"|"join"
-	Task *Task  `json:"task,omitempty"`
-	Gate *Gate  `json:"gate,omitempty"`
-	Fork *Fork  `json:"fork,omitempty"`
-	Join *Join  `json:"join,omitempty"`
+	Pos lexer.Position
+
+	Task *Task `parser:"( @@"`
+	Gate *Gate `parser:"| @@"`
+	Fork *Fork `parser:"| @@"`
+	Join *Join `parser:"| @@ )"`
 }
 
 type Task struct {
-	ID       string                 `json:"id"`
-	On       string                 `json:"on"`
-	Op       string                 `json:"op"`
-	Args     map[string]interface{} `json:"args,omitempty"`
-	Needs    []string               `json:"needs,omitempty"`
-	Produces []string               `json:"produces,omitempty"`
-	Labels   []string               `json:"labels,omitempty"`
+	Pos lexer.Position
+
+	ID       string    `parser:"'task' ':id' @String"`
+	On       string    `parser:"':on' @String"`
+	Op       string    `parser:"':op' @Ident"`
+	Args     []*KVPair `parser:"'(' 'args' @@* ')'"`
+	Needs    []string  `parser:"('(' 'needs' @String* ')')?"`
+	Produces []string  `parser:"('(' 'produces' @String* ')')?"`
+	Labels   []string  `parser:"('(' 'labels' @Ident* ')')?"`
 }
 
 type Gate struct {
-	ID        string `json:"id"`
-	Condition string `json:"condition"`
+	Pos lexer.Position
+
+	ID        string `parser:"'gate' ':id' @String"`
+	Condition string `parser:"'(' 'when' @String ')'"`
 }
 
 type Fork struct {
-	ID       string   `json:"id"`
-	Branches []string `json:"branches"`
+	Pos lexer.Position
+
+	ID       string   `parser:"'fork' ':id' @String"`
+	Branches []string `parser:"'(' 'branches' @String* ')'"`
 }
 
 type Join struct {
-	ID    string   `json:"id"`
-	After []string `json:"after"`
+	Pos lexer.Position
+
+	ID    string   `parser:"'join' ':id' @String"`
+	After []string `parser:"'(' 'after' @String* ')'"`
 }
 
 type Policy struct {
-	Name string                 `json:"name"`
-	KV   map[string]interface{} `json:"kv,omitempty"`
+	Pos lexer.Position
+
+	Name string    `parser:"'(' ':policies' '(' 'policy' @Ident"`
+	KV   []*KVPair `parser:"@@* ')' ')'"`
 }
 
 type Catalog struct {
-	Attributes map[string]AttrDef  `json:"attributes"`
-	Actions    map[string]ActionDef `json:"actions"`
+	Pos lexer.Position
+
+	Attributes []*AttrDef   `parser:"'(' ':catalog' '(' ':attributes' @@* ')'"`
+	Actions    []*ActionDef `parser:"'(' ':actions' @@* ')' ')'"`
 }
 
 type AttrDef struct {
-	Typ    string    `json:"typ"`
-	Enum   *[]string `json:"enum,omitempty"`
-	Format *string   `json:"format,omitempty"`
-	PII    *bool     `json:"pii,omitempty"`
+	Pos lexer.Position
+
+	Name   string   `parser:"'(' @Ident"`
+	Typ    string   `parser:"':' 'type' @Ident"`
+	Enum   []string `parser:"(':' 'enum' '(' @Ident* ')')?"`
+	Format *string  `parser:"(':' 'format' @Ident)?"`
+	PII    *bool    `parser:"(':' 'pii' @('true' | 'false'))? ')'"`
 }
 
 type ActionDef struct {
-	Params   map[string]ParamDef `json:"params"`
-	Needs    []string            `json:"needs"`
-	Produces []string            `json:"produces"`
+	Pos lexer.Position
+
+	Name     string      `parser:"'(' @Ident"`
+	Params   []*ParamDef `parser:"'(' 'params' @@* ')'"`
+	Needs    []string    `parser:"'(' 'needs' @String* ')'"`
+	Produces []string    `parser:"'(' 'produces' @String* ')' ')'"`
 }
 
 type ParamDef struct {
-	Typ      string    `json:"typ"`
-	Required bool      `json:"required"`
-	Enum     *[]string `json:"enum,omitempty"`
+	Pos lexer.Position
+
+	Name     string   `parser:"'(' @Ident"`
+	Typ      string   `parser:"':' 'type' @Ident"`
+	Required *bool    `parser:"(':' 'required' @('true' | 'false'))?"`
+	Enum     []string `parser:"(':' 'enum' '(' @Ident* ')')? ')'"`
 }
 
 type Expr struct {
-	Kind string `json:"kind"` // minimal placeholder
-	Path string `json:"path,omitempty"`
+	Pos lexer.Position
+
+	Kind string `parser:"@Ident"`
+	Path string `parser:"@String?"`
+}
+
+type KVPair struct {
+	Pos lexer.Position
+
+	Key   string `parser:"@Ident"`
+	Value *Value `parser:"@@"`
+}
+
+type Value struct {
+	Pos lexer.Position
+
+	String *string  `parser:"@String"`
+	Int    *int64   `parser:"| @Int"`
+	Float  *float64 `parser:"| @Float"`
+	Bool   *bool    `parser:"| @('true' | 'false')"`
+	Symbol *string  `parser:"| @Ident"`
 }

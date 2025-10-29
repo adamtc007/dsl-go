@@ -1,4 +1,5 @@
 package ebnf
+
 const Text = `# EBNF v0.1 (platform-level orchestrator, abridged)
 request       = "(" "onboarding-request" meta orchestrator [catalog] ")";
 meta          = "(" ":meta" (kvpair)+ ")";

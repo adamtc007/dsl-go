@@ -3,7 +3,11 @@ package manager
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/example/dsl-go/internal/ast"
@@ -18,22 +22,59 @@ type Config struct {
 }
 
 type Manager struct {
-	store  *storage.FileStore
-	parser parse.Parser
-	cfg    Config
+	store          *storage.FileStore
+	parser         parse.Parser
+	cfg            Config
+	dataDictionary map[string]Attribute
 }
 
-func New(cfg Config) *Manager {
-	return &Manager{
+func New(cfg Config) (*Manager, error) {
+	parser, err := parse.New()
+	if err != nil {
+		return nil, err
+	}
+	m := &Manager{
 		store:  storage.NewFileStore(cfg.DataDir),
-		parser: parse.New(),
+		parser: parser,
 		cfg:    cfg,
 	}
+	if err := m.LoadDataDictionary(); err != nil {
+		// For now, we'll just log the error. In a real application, you might want to handle this more gracefully.
+		fmt.Printf("warning: could not load data dictionary: %v\n", err)
+	}
+	return m, nil
+}
+
+func (m *Manager) LoadDataDictionary() error {
+	path := filepath.Join(m.cfg.RegistryDir, "data-dictionary.json")
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return fmt.Errorf("failed to read data dictionary: %w", err)
+	}
+
+	var attributes []Attribute
+	if err := json.Unmarshal(data, &attributes); err != nil {
+		return fmt.Errorf("failed to parse data dictionary: %w", err)
+	}
+
+	m.dataDictionary = make(map[string]Attribute)
+	for _, attr := range attributes {
+		m.dataDictionary[attr.AttributeID] = attr
+	}
+
+	return nil
+}
+
+func (m *Manager) GetAttribute(id string) (Attribute, bool) {
+	attr, ok := m.dataDictionary[id]
+	return attr, ok
 }
 
 func (m *Manager) CreateRequest(id string, template string) (version uint64, canonicalHash string, err error) {
 	req, err := m.parser.Parse(template) // strict
-	if err != nil { return 0, "", err }
+	if err != nil {
+		return 0, "", err
+	}
 
 	now := time.Now().UTC()
 	if req.Meta == nil {
@@ -47,7 +88,9 @@ func (m *Manager) CreateRequest(id string, template string) (version uint64, can
 	req.Meta.UpdatedAt = now
 
 	txt := print.ToSexpr(req)
-	m.store.Put(id, 1, txt)
+	if err := m.store.Put(id, 1, txt); err != nil {
+		return 0, "", fmt.Errorf("failed to store request: %w", err)
+	}
 	return 1, hash(txt), nil
 }
 
@@ -77,19 +120,27 @@ type PlanStep struct {
 
 func (m *Manager) CompilePlan(text string) (*Plan, error) {
 	_, err := m.parser.Parse(text)
-	if err != nil { return nil, err }
+	if err != nil {
+		return nil, err
+	}
 	return &Plan{Steps: []PlanStep{}, PlanHash: "todo"}, nil
 }
 
 type PlanDelta struct {
-	Added   []PlanStep     `json:"added"`
-	Removed []PlanStep     `json:"removed"`
+	Added   []PlanStep    `json:"added"`
+	Removed []PlanStep    `json:"removed"`
 	Changed [][2]PlanStep `json:"changed"`
 }
 
 func (m *Manager) PlanDelta(fromText, toText string) (*PlanDelta, error) {
-	_, err := m.parser.Parse(fromText); if err != nil { return nil, err }
-	_, err = m.parser.Parse(toText);   if err != nil { return nil, err }
+	_, err := m.parser.Parse(fromText)
+	if err != nil {
+		return nil, err
+	}
+	_, err = m.parser.Parse(toText)
+	if err != nil {
+		return nil, err
+	}
 	return &PlanDelta{Added: nil, Removed: nil, Changed: nil}, nil
 }
 

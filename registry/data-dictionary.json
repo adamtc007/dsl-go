@@ -1,0 +1,27 @@
+[
+  {
+    "AttributeID": "legal_name",
+    "Description": "The full legal name of the entity as it appears on official documents. This should not be an abbreviation or a trade name.",
+    "VectorID": "entity_name"
+  },
+  {
+    "AttributeID": "trade_name",
+    "Description": "The name under which the entity conducts business, if different from its legal name. Also known as a 'doing business as' (DBA) name.",
+    "VectorID": "entity_name"
+  },
+  {
+    "AttributeID": "country_of_incorporation",
+    "Description": "The country in which the entity is legally registered. This should be an ISO 3166-1 alpha-2 country code (e.g., US, GB, DE).",
+    "VectorID": "entity_jurisdiction"
+  },
+  {
+    "AttributeID": "lei_code",
+    "Description": "The Legal Entity Identifier (LEI) of the entity. This is a 20-character, alpha-numeric code that connects to key reference information that enables clear and unique identification of legal entities participating in financial transactions.",
+    "VectorID": "entity_identifier"
+  },
+  {
+    "AttributeID": "bic_code",
+    "Description": "The Business Identifier Code (BIC), also known as SWIFT-BIC, is a standard format of Business Identifier Codes approved by the International Organization for Standardization (ISO). It is a unique identification code for both financial and non-financial institutions.",
+    "VectorID": "entity_identifier"
+  }
+]

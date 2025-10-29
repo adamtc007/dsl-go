@@ -1,7 +1,9 @@
 package generator
 
 import (
+	"bytes"
 	"fmt"
+	"text/template"
 	"time"
 
 	"github.com/example/dsl-go/internal/ast"
@@ -15,10 +17,14 @@ type Generator struct {
 }
 
 // New creates a new Generator instance
-func New() *Generator {
-	return &Generator{
-		parser: parse.New(),
+func New() (*Generator, error) {
+	parser, err := parse.New()
+	if err != nil {
+		return nil, err
 	}
+	return &Generator{
+		parser: parser,
+	}, nil
 }
 
 // Generate creates a populated DSL instance from the request
@@ -37,7 +43,7 @@ func (g *Generator) Generate(req *GenerateRequest) (*GenerateResponse, error) {
 	g.addResources(dslRequest, req.Products, req.Resources)
 
 	// Generate onboarding flows
-	g.generateFlows(dslRequest, req)
+	g.generateFlows(dslRequest)
 
 	// Convert to S-expression format
 	dslText := print.ToSexpr(dslRequest)
@@ -85,9 +91,6 @@ func (g *Generator) GenerateFromTemplate(templateDSL string, req *GenerateReques
 	// Add products and resources
 	g.addResources(dslRequest, req.Products, req.Resources)
 
-	// Enhance flows if needed
-	g.enhanceFlows(dslRequest, req)
-
 	// Convert to S-expression format
 	dslText := print.ToSexpr(dslRequest)
 
@@ -99,6 +102,38 @@ func (g *Generator) GenerateFromTemplate(templateDSL string, req *GenerateReques
 		EntitiesAdded:  len(req.Entities),
 		ResourcesAdded: len(req.Products) + len(req.Resources),
 		FlowsGenerated: len(dslRequest.Orchestrator.Flows),
+	}
+
+	return response, nil
+}
+
+func (g *Generator) GenerateFromTemplateFile(templatePath string, req *GenerateRequest) (*GenerateResponse, error) {
+	if err := g.validate(req); err != nil {
+		return nil, err
+	}
+
+	tmpl, err := template.ParseFiles(templatePath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse template file: %w", err)
+	}
+
+	req.Now = time.Now()
+
+	var buf bytes.Buffer
+	if err := tmpl.Execute(&buf, req); err != nil {
+		return nil, fmt.Errorf("failed to execute template: %w", err)
+	}
+
+	dslText := buf.String()
+
+	response := &GenerateResponse{
+		RequestID:      req.RequestID,
+		DSL:            dslText,
+		Version:        1,
+		GeneratedAt:    req.Now.UTC(),
+		EntitiesAdded:  len(req.Entities),
+		ResourcesAdded: len(req.Products) + len(req.Resources),
+		FlowsGenerated: 1, // This is now controlled by the template
 	}
 
 	return response, nil
@@ -126,15 +161,15 @@ func (g *Generator) createBaseRequest(req *GenerateRequest) *ast.Request {
 			CreatedAt: now,
 			UpdatedAt: now,
 		},
-		Orchestrator: ast.Orchestrator{
-			Lifecycle: ast.Lifecycle{
+		Orchestrator: &ast.Orchestrator{
+			Lifecycle: &ast.Lifecycle{
 				States:      []string{"draft", "validated", "in-progress", "kyc-complete", "onboarded", "failed"},
 				Initial:     "draft",
-				Transitions: []ast.Transition{},
+				Transitions: []*ast.Transition{},
 			},
-			Entities:  make(map[string]ast.Entity),
-			Resources: make(map[string]ast.Resource),
-			Flows:     make(map[string]ast.Flow),
+			Entities:  []*ast.Entity{},
+			Resources: []*ast.Resource{},
+			Flows:     []*ast.Flow{},
 		},
 	}
 }
@@ -142,47 +177,56 @@ func (g *Generator) createBaseRequest(req *GenerateRequest) *ast.Request {
 // addEntities adds client entities to the DSL
 func (g *Generator) addEntities(dslReq *ast.Request, entities []ClientEntity) {
 	for _, clientEntity := range entities {
-		attrs := make(map[string]ast.AttrVal)
+		attrs := []*ast.AttrVal{}
 
 		// Add standard attributes
-		attrs["name"] = ast.AttrVal{
-			Value:      clientEntity.Name,
+		attrs = append(attrs, &ast.AttrVal{
+			Key:        "name",
+			Value:      &ast.Value{String: &clientEntity.Name},
 			Provenance: stringPtr("client-provided"),
-		}
-		attrs["role"] = ast.AttrVal{
-			Value:      string(clientEntity.Role),
+		})
+		attrs = append(attrs, &ast.AttrVal{
+			Key:        "role",
+			Value:      &ast.Value{Symbol: stringPtr(string(clientEntity.Role))},
 			Provenance: stringPtr("system-assigned"),
-		}
+		})
 
 		if clientEntity.Country != "" {
-			attrs["country"] = ast.AttrVal{
-				Value:      clientEntity.Country,
+			attrs = append(attrs, &ast.AttrVal{
+				Key:        "country",
+				Value:      &ast.Value{String: &clientEntity.Country},
 				Provenance: stringPtr("client-provided"),
-			}
+			})
 		}
 
 		if clientEntity.LEI != "" {
-			attrs["lei"] = ast.AttrVal{
-				Value:      clientEntity.LEI,
+			attrs = append(attrs, &ast.AttrVal{
+				Key:        "lei",
+				Value:      &ast.Value{String: &clientEntity.LEI},
 				Provenance: stringPtr("client-provided"),
-			}
+			})
 		}
 
 		// Add any additional attributes
 		for key, value := range clientEntity.Attributes {
-			attrs[key] = ast.AttrVal{
-				Value:      value,
-				Provenance: stringPtr("client-provided"),
+			strVal, ok := value.(string)
+			if !ok {
+				continue
 			}
+			attrs = append(attrs, &ast.AttrVal{
+				Key:        key,
+				Value:      &ast.Value{String: &strVal},
+				Provenance: stringPtr("client-provided"),
+			})
 		}
 
-		entity := ast.Entity{
+		entity := &ast.Entity{
 			ID:    clientEntity.ID,
 			Typ:   clientEntity.EntityType,
 			Attrs: attrs,
 		}
 
-		dslReq.Orchestrator.Entities[clientEntity.ID] = entity
+		dslReq.Orchestrator.Entities = append(dslReq.Orchestrator.Entities, entity)
 	}
 }
 
@@ -190,81 +234,98 @@ func (g *Generator) addEntities(dslReq *ast.Request, entities []ClientEntity) {
 func (g *Generator) addResources(dslReq *ast.Request, products []ProductSpec, resources []ResourceSpec) {
 	// Add products as resources
 	for _, product := range products {
-		requires := []ast.RequireItem{}
+		requires := []*ast.RequireItem{}
 		// Products typically require at least one entity
 		if len(dslReq.Orchestrator.Entities) > 0 {
-			for entityID := range dslReq.Orchestrator.Entities {
-				requires = append(requires, ast.RequireItem{
+			for _, entity := range dslReq.Orchestrator.Entities {
+				requires = append(requires, &ast.RequireItem{
 					Kind: "entity",
-					ID:   entityID,
+					ID:   entity.ID,
 				})
 				break // Just require the first entity for now
 			}
 		}
 
-		config := product.Config
-		if config == nil {
-			config = make(map[string]interface{})
-		}
+		config := []*ast.KVPair{}
 		if product.Currency != "" {
-			config["currency"] = product.Currency
+			config = append(config, &ast.KVPair{
+				Key:   "currency",
+				Value: &ast.Value{String: &product.Currency},
+			})
 		}
 
-		resource := ast.Resource{
+		resource := &ast.Resource{
 			ID:       product.ID,
 			Typ:      product.ProductType,
 			Requires: requires,
 			Config:   config,
 		}
 
-		dslReq.Orchestrator.Resources[product.ID] = resource
+		dslReq.Orchestrator.Resources = append(dslReq.Orchestrator.Resources, resource)
 	}
 
 	// Add explicit resources
 	for _, resSpec := range resources {
-		requires := []ast.RequireItem{}
+		requires := []*ast.RequireItem{}
 		for _, reqID := range resSpec.Requires {
-			requires = append(requires, ast.RequireItem{
+			requires = append(requires, &ast.RequireItem{
 				Kind: "entity",
 				ID:   reqID,
 			})
 		}
 
-		resource := ast.Resource{
+		config := []*ast.KVPair{}
+		for k, v := range resSpec.Config {
+			strVal, ok := v.(string)
+			if !ok {
+				continue
+			}
+			config = append(config, &ast.KVPair{
+				Key:   k,
+				Value: &ast.Value{String: &strVal},
+			})
+		}
+
+		resource := &ast.Resource{
 			ID:       resSpec.ID,
 			Typ:      resSpec.Type,
 			Requires: requires,
-			Config:   resSpec.Config,
+			Config:   config,
 		}
 
-		dslReq.Orchestrator.Resources[resSpec.ID] = resource
+		dslReq.Orchestrator.Resources = append(dslReq.Orchestrator.Resources, resource)
 	}
 }
 
 // generateFlows generates onboarding flows based on entities and products
-func (g *Generator) generateFlows(dslReq *ast.Request, req *GenerateRequest) {
-	steps := []ast.Step{}
+func (g *Generator) generateFlows(dslReq *ast.Request) {
+	steps := []*ast.Step{}
 
 	// Step 1: Verify each entity
-	for entityID, entity := range dslReq.Orchestrator.Entities {
-		taskID := fmt.Sprintf("verify-%s", sanitizeID(entityID))
+	for _, entity := range dslReq.Orchestrator.Entities {
+		taskID := fmt.Sprintf("verify-%s", sanitizeID(entity.ID))
 
 		// Determine verification type based on role
-		role := entity.Attrs["role"].Value.(string)
+		var role string
+		for _, attr := range entity.Attrs {
+			if attr.Key == "role" {
+				role = *attr.Value.Symbol
+				break
+			}
+		}
 		verificationLevel := "standard"
 		if role == string(RoleSicav) || role == string(RoleManagementCompany) {
 			verificationLevel = "enhanced"
 		}
 
-		step := ast.Step{
-			Kind: "task",
+		step := &ast.Step{
 			Task: &ast.Task{
 				ID: taskID,
 				On: "kyc-service",
 				Op: "verify-entity",
-				Args: map[string]interface{}{
-					"entity-id":          entityID,
-					"verification-level": verificationLevel,
+				Args: []*ast.KVPair{
+					{Key: "entity-id", Value: &ast.Value{String: &entity.ID}},
+					{Key: "verification-level", Value: &ast.Value{String: &verificationLevel}},
 				},
 			},
 		}
@@ -272,16 +333,15 @@ func (g *Generator) generateFlows(dslReq *ast.Request, req *GenerateRequest) {
 	}
 
 	// Step 2: AML screening for all entities
-	for entityID := range dslReq.Orchestrator.Entities {
-		taskID := fmt.Sprintf("aml-check-%s", sanitizeID(entityID))
-		step := ast.Step{
-			Kind: "task",
+	for _, entity := range dslReq.Orchestrator.Entities {
+		taskID := fmt.Sprintf("aml-check-%s", sanitizeID(entity.ID))
+		step := &ast.Step{
 			Task: &ast.Task{
 				ID: taskID,
 				On: "aml-service",
 				Op: "screen-entity",
-				Args: map[string]interface{}{
-					"entity-id": entityID,
+				Args: []*ast.KVPair{
+					{Key: "entity-id", Value: &ast.Value{String: &entity.ID}},
 				},
 			},
 		}
@@ -289,8 +349,7 @@ func (g *Generator) generateFlows(dslReq *ast.Request, req *GenerateRequest) {
 	}
 
 	// Step 3: Compliance review gate
-	gateStep := ast.Step{
-		Kind: "gate",
+	gateStep := &ast.Step{
 		Gate: &ast.Gate{
 			ID:        "compliance-review",
 			Condition: "all-kyc-complete AND all-aml-clear",
@@ -299,16 +358,15 @@ func (g *Generator) generateFlows(dslReq *ast.Request, req *GenerateRequest) {
 	steps = append(steps, gateStep)
 
 	// Step 4: Setup products/resources
-	for resourceID, resource := range dslReq.Orchestrator.Resources {
-		taskID := fmt.Sprintf("setup-%s", sanitizeID(resourceID))
-		step := ast.Step{
-			Kind: "task",
+	for _, resource := range dslReq.Orchestrator.Resources {
+		taskID := fmt.Sprintf("setup-%s", sanitizeID(resource.ID))
+		step := &ast.Step{
 			Task: &ast.Task{
 				ID: taskID,
-				On: resourceID,
+				On: resource.ID,
 				Op: g.getSetupOperation(resource.Typ),
-				Args: map[string]interface{}{
-					"resource-id": resourceID,
+				Args: []*ast.KVPair{
+					{Key: "resource-id", Value: &ast.Value{String: &resource.ID}},
 				},
 			},
 		}
@@ -316,25 +374,12 @@ func (g *Generator) generateFlows(dslReq *ast.Request, req *GenerateRequest) {
 	}
 
 	// Create main flow
-	mainFlow := ast.Flow{
+	mainFlow := &ast.Flow{
 		ID:    "main",
 		Steps: steps,
 	}
 
-	dslReq.Orchestrator.Flows["main"] = mainFlow
-}
-
-// enhanceFlows adds tasks to existing flows for new entities/resources
-func (g *Generator) enhanceFlows(dslReq *ast.Request, req *GenerateRequest) {
-	// If no main flow exists, generate from scratch
-	if _, exists := dslReq.Orchestrator.Flows["main"]; !exists {
-		g.generateFlows(dslReq, req)
-		return
-	}
-
-	// TODO: Enhance existing flows with new tasks
-	// For now, regenerate to keep it simple
-	g.generateFlows(dslReq, req)
+	dslReq.Orchestrator.Flows = append(dslReq.Orchestrator.Flows, mainFlow)
 }
 
 // getSetupOperation returns the appropriate setup operation for a resource type

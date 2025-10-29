@@ -1,0 +1,22 @@
+run:
+  timeout: 5m
+  skip-dirs:
+    - bin
+    - vendor
+
+linters:
+  enable:
+    - gofmt
+    - goimports
+    - revive
+    - govet
+    - staticcheck
+    - unused
+    - errcheck
+    - typecheck
+    - ineffassign
+    - bodyclose
+    - stylecheck
+    - unconvert
+    - prealloc
+    - exportloopref

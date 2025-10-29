@@ -148,7 +148,11 @@ func generateDSLFromScenario(loader *mocks.Loader) {
 	}
 
 	// Generate DSL
-	gen := generator.New()
+	gen, err := generator.New()
+	if err != nil {
+		log.Printf("Error creating generator: %v", err)
+		return
+	}
 	response, err := gen.Generate(scenario)
 	if err != nil {
 		log.Printf("Error generating DSL: %v", err)
@@ -165,10 +169,14 @@ func generateDSLFromScenario(loader *mocks.Loader) {
 	fmt.Printf("    DSL length: %d bytes\n", len(response.DSL))
 
 	// Optionally save to storage
-	mgr := manager.New(manager.Config{
+	mgr, err := manager.New(manager.Config{
 		DataDir:     "./data",
 		RegistryDir: "./registry",
 	})
+	if err != nil {
+		log.Printf("Error creating manager: %v", err)
+		return
+	}
 
 	version, hash, err := mgr.CreateRequest(response.RequestID, response.DSL)
 	if err != nil {
