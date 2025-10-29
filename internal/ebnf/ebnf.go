@@ -1,0 +1,37 @@
+package ebnf
+const Text = `# EBNF v0.1 (platform-level orchestrator, abridged)
+request       = "(" "onboarding-request" meta orchestrator [catalog] ")";
+meta          = "(" ":meta" (kvpair)+ ")";
+kvpair        = "(" ident value ")";
+orchestrator  = "(" ":orchestrator" lifecycle entities resources flows [policies] )";
+lifecycle     = "(" ":lifecycle" "(" "states" state+ ")" "(" "initial" state ")" "(" "transitions" transition+ ")" )";
+state         = ident;
+transition    = "(" "->" state state [guard] [effects] )";
+guard         = "(" "when" expr )";
+effects       = "(" "do" action-call+ )";
+entities      = "(" ":entities" entity+ )";
+entity        = "(" "entity" ":id" qid ":type" ident "(" "attrs" attr+ ")" )";
+attr          = "(" ident value { attrmeta } )";
+attrmeta      = ":" "provenance" qstr | ":" "needed-by" "(" ident+ ")";
+resources     = "(" ":resources" resource+ )";
+resource      = "(" "resource" ":id" qid ":type" ident [requires] [config] )";
+requires      = "(" "requires" require-item+ )";
+require-item  = "(" "entity" qid ")" | "(" "attr" qid-dot )";
+config        = "(" "config" (kvpair)+ )";
+flows         = "(" ":flows" flow+ )";
+flow          = "(" "flow" ":id" qid [doc] "(" "steps" step+ ")" )";
+step          = task | gate | fork | join;
+task          = "(" "task" ":id" qid ":on" qid ":op" ident "(" "args" arg* ")" [needs] [produces] [labels] )";
+arg           = "(" ident value )";
+needs         = "(" "needs" refpath+ ")"; produces = "(" "produces" refpath+ ")";
+labels        = "(" "labels" ident+ )";
+gate          = "(" "gate" ":id" qid "(" "when" expr ")" )";
+fork          = "(" "fork" ":id" qid "(" "branches" qid+ ")" )";
+join          = "(" "join" ":id" qid "(" "after" qid+ ")" )";
+catalog       = "(" ":catalog" "(" ":attributes" attr-def+ ")" "(" ":actions" action-def+ ")" )";
+attr-def      = "(" ident ":" "type" type [":" "enum" "(" ident+ ")"] [":" "format" ident] [":" "pii" bool] )";
+action-def    = "(" ident "(" "params" param-def* ")" "(" "needs" refpath* ")" "(" "produces" refpath* ")" )";
+param-def     = "(" ident ":" "type" type [":" "required" bool] [":" "enum" "(" ident+ ")"] )";
+type          = "string" | "number" | "bool" | "date" | "datetime" | "money" | "country" | ident;
+expr          = simple-expr; refpath = qid-dot | ("@" ident);
+qid           = quoted-string; qid-dot = quoted-string; ident = bare-symbol; qstr = quoted-string;`

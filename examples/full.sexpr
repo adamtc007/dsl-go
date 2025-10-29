@@ -1,0 +1,24 @@
+(onboarding-request
+  (:meta
+    (request-id "ob-EXAMPLE")
+    (version 1)
+    (created-at "2025-10-28T10:05:00Z"))
+  (:orchestrator
+    (:lifecycle
+      (states draft validated compiled executing completed failed)
+      (initial draft)
+      (transitions))
+    (:entities
+      (entity :id "le:ACME" :type LegalEntity
+        (attrs
+          (name "ACME Ltd")
+          (country "GB")
+          (lei "5493001KJTIIGC8Y1R12"))))
+    (:resources
+      (resource :id "custody:primary" :type CustodySafekeeping))
+    (:flows
+      (flow :id "main"
+        (steps
+          (task :id "T1" :on "custody:primary" :op create-account (args (currency "GBP")))
+          (gate :id "G1" (when "custody:primary.account-id"))))))
+)
