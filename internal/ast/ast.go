@@ -18,7 +18,7 @@ type Meta struct {
 	Pos lexer.Position
 
 	RequestID string    `parser:"'(' ':meta' '(' 'request-id' @String ')'"`
-	Version   uint64    `parser:"'(' 'version' @Int ')'"`
+	Version   uint64    `parser:"'(' 'version' @Number ')'"`
 	CreatedAt time.Time `parser:"('(' 'created-at' @String ')')?"`
 	UpdatedAt time.Time `parser:"('(' 'updated-at' @String ')')? ')'"`
 }
@@ -200,8 +200,8 @@ type Value struct {
 	Pos lexer.Position
 
 	String *string  `parser:"@String"`
-	Int    *int64   `parser:"| @Int"`
-	Float  *float64 `parser:"| @Float"`
+	Int    *int64   `parser:"| @Number"`
+	Float  *float64 `parser:"| @Number"`
 	Bool   *bool    `parser:"| @('true' | 'false')"`
 	Symbol *string  `parser:"| @Ident"`
 }

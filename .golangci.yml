@@ -1,6 +1,8 @@
 run:
   timeout: 5m
-  skip-dirs:
+
+issues:
+  exclude-dirs:
     - bin
     - vendor
 
@@ -19,4 +21,4 @@ linters:
     - stylecheck
     - unconvert
     - prealloc
-    - exportloopref
+    - copyloopvar

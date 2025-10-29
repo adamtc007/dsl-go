@@ -3,6 +3,7 @@ package generator
 import (
 	"bytes"
 	"fmt"
+	"path/filepath"
 	"text/template"
 	"time"
 
@@ -112,15 +113,15 @@ func (g *Generator) GenerateFromTemplateFile(templatePath string, req *GenerateR
 		return nil, err
 	}
 
-	tmpl, err := template.ParseFiles(templatePath)
+	tmpl, err := template.ParseGlob("templates/*.sexpr")
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse template file: %w", err)
+		return nil, fmt.Errorf("failed to parse templates: %w", err)
 	}
 
 	req.Now = time.Now()
 
 	var buf bytes.Buffer
-	if err := tmpl.Execute(&buf, req); err != nil {
+	if err := tmpl.ExecuteTemplate(&buf, filepath.Base(templatePath), req); err != nil {
 		return nil, fmt.Errorf("failed to execute template: %w", err)
 	}
 
