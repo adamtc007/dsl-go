@@ -1,0 +1,265 @@
+{
+  "request_id": "onboard-institutional-2024-q4-001",
+  "tenant_id": "custodian-bank-global",
+  "scenario_name": "Institutional Multi-Entity Onboarding",
+  "scenario_description": "Complex institutional onboarding involving investment manager, pension fund, SICAV structure with multiple products",
+  "entities": [
+    {
+      "id": "le:investment-mgr-global-alpha",
+      "name": "Global Alpha Investment Management S.A.",
+      "role": "investment-manager",
+      "entity_type": "LegalEntity",
+      "lei": "5493001KJTIIGC8Y1R12",
+      "country": "LU",
+      "attributes": {
+        "registration_number": "B234567",
+        "aum": "12500000000",
+        "aum_currency": "EUR",
+        "regulated": true,
+        "regulator": "CSSF",
+        "license_type": "Chapter 15 Management Company",
+        "client_type": "institutional",
+        "risk_tier": "medium",
+        "kyc_level": "enhanced",
+        "pep_exposure": false,
+        "incorporation_date": "2008-03-15"
+      }
+    },
+    {
+      "id": "le:pension-fund-umw",
+      "name": "United Manufacturing Workers Pension Fund",
+      "role": "asset-owner",
+      "entity_type": "LegalEntity",
+      "lei": "549300PENSION12345",
+      "country": "US",
+      "attributes": {
+        "entity_subtype": "defined-benefit-pension",
+        "aum": "8500000000",
+        "aum_currency": "USD",
+        "regulated": true,
+        "regulator": "DOL",
+        "erisa_plan": true,
+        "participant_count": 45000,
+        "client_type": "institutional",
+        "risk_tier": "low",
+        "kyc_level": "standard",
+        "fatca_status": "exempt-beneficial-owner"
+      }
+    },
+    {
+      "id": "le:mgmt-co-global-alpha",
+      "name": "Global Alpha Management Company S.A.",
+      "role": "management-company",
+      "entity_type": "LegalEntity",
+      "lei": "5493001KJTIIGC8Y1R12",
+      "country": "LU",
+      "attributes": {
+        "registration_number": "B234567",
+        "regulated": true,
+        "regulator": "CSSF",
+        "license_type": "Chapter 15",
+        "ucits_manager": true,
+        "aifm": true,
+        "funds_under_management": 25,
+        "client_type": "institutional",
+        "risk_tier": "medium",
+        "kyc_level": "enhanced"
+      }
+    },
+    {
+      "id": "le:sicav-geo",
+      "name": "Global Equity Opportunities SICAV",
+      "role": "sicav",
+      "entity_type": "LegalEntity",
+      "lei": "222100SICAV123456789",
+      "country": "LU",
+      "attributes": {
+        "registration_number": "B187654",
+        "ucits_compliant": true,
+        "umbrella_structure": true,
+        "sub_funds": 4,
+        "total_aum": "2400000000",
+        "aum_currency": "EUR",
+        "shareholder_count": 8500,
+        "inception_date": "2015-06-01",
+        "client_type": "fund",
+        "risk_tier": "medium",
+        "kyc_level": "standard",
+        "sfdr_classification": "Article 8"
+      }
+    }
+  ],
+  "products": [
+    {
+      "id": "prod:custody-eur-omnibus",
+      "product_type": "CustodySafekeeping",
+      "currency": "EUR",
+      "config": {
+        "account_type": "omnibus",
+        "settlement_method": "dvp",
+        "markets": ["XPAR", "XETRA", "XAMS", "XMIL", "XMAD"],
+        "asset_classes": ["equities", "bonds", "etfs", "funds"],
+        "corporate_actions": true,
+        "proxy_voting": true,
+        "securities_lending": false,
+        "pricing_source": "bloomberg",
+        "sla_tier": "premium"
+      }
+    },
+    {
+      "id": "prod:custody-usd-segregated",
+      "product_type": "CustodySafekeeping",
+      "currency": "USD",
+      "config": {
+        "account_type": "segregated",
+        "settlement_method": "dvp",
+        "markets": ["XNYS", "XNAS", "ARCX"],
+        "asset_classes": ["equities", "bonds", "etfs"],
+        "corporate_actions": true,
+        "proxy_voting": true,
+        "securities_lending": false,
+        "pricing_source": "bloomberg",
+        "sla_tier": "premium"
+      }
+    },
+    {
+      "id": "prod:fund-accounting",
+      "product_type": "FundAccounting",
+      "config": {
+        "frequency": "daily",
+        "nav_calculation": true,
+        "currencies": ["EUR", "USD", "GBP", "CHF"],
+        "financial_reporting": true,
+        "regulatory_reporting": true,
+        "investor_reporting": true,
+        "performance_attribution": true,
+        "expense_accruals": true,
+        "multi_share_class": true
+      }
+    },
+    {
+      "id": "prod:fund-administration",
+      "product_type": "FundAdministration",
+      "config": {
+        "transfer_agent": true,
+        "register_maintenance": true,
+        "subscription_redemption": true,
+        "aml_kyc_checks": true,
+        "investor_onboarding": true,
+        "distribution_payments": true,
+        "tax_reporting": true,
+        "shareholder_communications": true
+      }
+    },
+    {
+      "id": "prod:regulatory-reporting",
+      "product_type": "RegulatoryReporting",
+      "config": {
+        "reports": ["AIFMD", "MiFID_II", "EMIR", "SFTR", "CSDR"],
+        "frequency": "as_required",
+        "jurisdictions": ["EU", "LU", "US"],
+        "automated_filing": true,
+        "validation_checks": true,
+        "audit_trail": true
+      }
+    },
+    {
+      "id": "prod:performance-measurement",
+      "product_type": "PerformanceMeasurement",
+      "config": {
+        "benchmark_comparison": true,
+        "attribution_analysis": true,
+        "risk_analytics": true,
+        "frequency": "daily",
+        "factsheets": true,
+        "presentation_standards": "GIPS"
+      }
+    }
+  ],
+  "resources": [
+    {
+      "id": "res:kyc-verification-service",
+      "type": "VerificationService",
+      "requires": ["le:investment-mgr-global-alpha", "le:mgmt-co-global-alpha", "le:sicav-geo"],
+      "config": {
+        "provider": "refinitiv",
+        "verification_level": "enhanced",
+        "screening_lists": ["sanctions", "pep", "adverse-media", "regulatory"],
+        "ongoing_monitoring": true,
+        "alert_threshold": "medium"
+      }
+    },
+    {
+      "id": "res:document-vault",
+      "type": "DocumentStorage",
+      "requires": [],
+      "config": {
+        "retention_years": 10,
+        "encryption": "AES256",
+        "access_control": "role-based",
+        "audit_logging": true,
+        "version_control": true,
+        "esignature": true
+      }
+    },
+    {
+      "id": "res:aml-screening",
+      "type": "AMLService",
+      "requires": ["le:investment-mgr-global-alpha", "le:pension-fund-umw", "le:sicav-geo"],
+      "config": {
+        "provider": "world-check",
+        "screening_depth": "comprehensive",
+        "politically_exposed_persons": true,
+        "sanctions_lists": "all",
+        "adverse_media": true,
+        "ongoing_monitoring": true,
+        "alert_workflow": true
+      }
+    },
+    {
+      "id": "res:legal-entity-verification",
+      "type": "LegalEntityVerification",
+      "requires": ["le:investment-mgr-global-alpha", "le:mgmt-co-global-alpha", "le:sicav-geo"],
+      "config": {
+        "provider": "gleif",
+        "lei_validation": true,
+        "registry_checks": ["commercial_register", "regulatory_database"],
+        "beneficial_ownership": true,
+        "sanctions_screening": true
+      }
+    }
+  ],
+  "metadata": {
+    "onboarding_type": "institutional_complex",
+    "priority": "high",
+    "relationship_manager": "sarah.williams@custodian-bank.com",
+    "relationship_manager_id": "emp:sw-12345",
+    "compliance_officer": "john.matthews@custodian-bank.com",
+    "compliance_officer_id": "emp:jm-67890",
+    "expected_go_live": "2024-12-15",
+    "requested_date": "2024-10-15",
+    "business_unit": "institutional-services",
+    "region": "EMEA",
+    "estimated_revenue_annual": "450000",
+    "revenue_currency": "EUR",
+    "strategic_relationship": true,
+    "cross_sell_opportunities": ["securities_lending", "fx_services", "cash_management"],
+    "special_requirements": [
+      "expedited_onboarding",
+      "dedicated_service_team",
+      "quarterly_business_reviews"
+    ]
+  },
+  "workflow_preferences": {
+    "parallel_kyc": true,
+    "auto_approve_low_risk": false,
+    "manual_review_gates": ["post_kyc", "pre_account_opening"],
+    "notification_recipients": [
+      "sarah.williams@custodian-bank.com",
+      "john.matthews@custodian-bank.com",
+      "ops-team@custodian-bank.com"
+    ],
+    "sla_days": 30,
+    "escalation_threshold_days": 20
+  }
+}

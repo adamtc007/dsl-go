@@ -1,0 +1,123 @@
+{
+  "request_id": "onboard-req-2024-001",
+  "tenant_id": "bank-xyz",
+  "entities": [
+    {
+      "id": "le:investment-mgr-abc",
+      "name": "ABC Investment Management S.A.",
+      "role": "investment-manager",
+      "entity_type": "LegalEntity",
+      "lei": "5493001KJTIIGC8Y1R12",
+      "country": "LU",
+      "attributes": {
+        "registration_number": "B123456",
+        "aum": "5000000000",
+        "regulated": true,
+        "regulator": "CSSF"
+      }
+    },
+    {
+      "id": "le:asset-owner-pension",
+      "name": "Global Pension Fund",
+      "role": "asset-owner",
+      "entity_type": "LegalEntity",
+      "country": "US",
+      "attributes": {
+        "entity_subtype": "pension-fund",
+        "assets_under_management": "10000000000",
+        "jurisdiction": "Delaware"
+      }
+    },
+    {
+      "id": "le:mgmt-co-xyz",
+      "name": "XYZ Management Company",
+      "role": "management-company",
+      "entity_type": "LegalEntity",
+      "lei": "213800ABCDEF123456",
+      "country": "LU",
+      "attributes": {
+        "license_type": "Chapter 15",
+        "incorporation_date": "2010-03-15"
+      }
+    },
+    {
+      "id": "le:sicav-global-equity",
+      "name": "Global Equity SICAV",
+      "role": "sicav",
+      "entity_type": "LegalEntity",
+      "country": "LU",
+      "attributes": {
+        "umbrella_structure": true,
+        "sub_funds": 3,
+        "ucits_compliant": true,
+        "inception_date": "2015-06-01"
+      }
+    }
+  ],
+  "products": [
+    {
+      "id": "prod:custody-eur-omnibus",
+      "product_type": "CustodySafekeeping",
+      "currency": "EUR",
+      "config": {
+        "account_type": "omnibus",
+        "settlement_method": "dvp",
+        "markets": ["XPAR", "XETRA", "XAMS"]
+      }
+    },
+    {
+      "id": "prod:custody-usd-segregated",
+      "product_type": "CustodySafekeeping",
+      "currency": "USD",
+      "config": {
+        "account_type": "segregated",
+        "settlement_method": "dvp",
+        "markets": ["XNYS", "XNAS"]
+      }
+    },
+    {
+      "id": "prod:fund-accounting",
+      "product_type": "FundAccounting",
+      "config": {
+        "frequency": "daily",
+        "nav_calculation": true,
+        "currencies": ["EUR", "USD", "GBP"]
+      }
+    },
+    {
+      "id": "prod:regulatory-reporting",
+      "product_type": "RegulatoryReporting",
+      "config": {
+        "reports": ["AIFMD", "MiFID", "EMIR"],
+        "frequency": "monthly"
+      }
+    }
+  ],
+  "resources": [
+    {
+      "id": "res:kyc-provider",
+      "type": "VerificationService",
+      "requires": ["le:investment-mgr-abc", "le:mgmt-co-xyz"],
+      "config": {
+        "provider": "refinitiv",
+        "verification_level": "enhanced",
+        "screening_lists": ["sanctions", "pep", "adverse-media"]
+      }
+    },
+    {
+      "id": "res:document-repository",
+      "type": "DocumentStorage",
+      "requires": [],
+      "config": {
+        "retention_years": 10,
+        "encryption": "AES256"
+      }
+    }
+  ],
+  "metadata": {
+    "onboarding_type": "institutional",
+    "priority": "high",
+    "relationship_manager": "john.doe@bank-xyz.com",
+    "expected_go_live": "2024-12-01"
+  }
+}

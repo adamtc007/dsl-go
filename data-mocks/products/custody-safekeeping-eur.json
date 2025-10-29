@@ -1,0 +1,128 @@
+{
+  "id": "prod:custody-safekeeping-eur",
+  "product_type": "CustodySafekeeping",
+  "currency": "EUR",
+  "config": {
+    "account_type": "omnibus",
+    "account_structure": "multi-level",
+    "settlement_method": "dvp",
+    "markets": [
+      "XPAR",
+      "XETRA",
+      "XAMS",
+      "XMIL",
+      "XMAD",
+      "XLIS"
+    ],
+    "asset_classes": [
+      "equities",
+      "bonds",
+      "etfs",
+      "structured_products",
+      "investment_funds"
+    ],
+    "services": {
+      "safekeeping": true,
+      "settlement": true,
+      "corporate_actions": true,
+      "income_collection": true,
+      "proxy_voting": true,
+      "tax_services": true,
+      "reporting": true
+    },
+    "settlement": {
+      "standard_settlement": "T+2",
+      "currencies_supported": ["EUR", "USD", "GBP", "CHF"],
+      "same_day_settlement": true,
+      "auto_settlement": true,
+      "fail_management": true
+    },
+    "corporate_actions": {
+      "mandatory_processing": "automatic",
+      "voluntary_processing": "client_instruction",
+      "election_deadline": "market_deadline_minus_1",
+      "notification_method": ["swift", "email", "portal"],
+      "cash_dividends": true,
+      "stock_dividends": true,
+      "rights_issues": true,
+      "tender_offers": true,
+      "mergers_acquisitions": true
+    },
+    "pricing_valuation": {
+      "pricing_source": "bloomberg",
+      "valuation_frequency": "daily",
+      "pricing_time": "16:00 CET",
+      "fair_value_procedures": true,
+      "independent_price_verification": true
+    },
+    "reporting": {
+      "standard_reports": [
+        "daily_holdings",
+        "transaction_confirmation",
+        "monthly_statement",
+        "corporate_actions_summary",
+        "income_report"
+      ],
+      "report_delivery": ["sftp", "swift", "email", "portal"],
+      "custom_reports": true,
+      "real_time_positions": true
+    },
+    "fees": {
+      "custody_fee_bps": 2.5,
+      "custody_fee_min": 5000,
+      "custody_fee_currency": "EUR",
+      "transaction_fee": 15.0,
+      "transaction_fee_currency": "EUR",
+      "corporate_action_fee": 25.0,
+      "billing_frequency": "quarterly",
+      "billing_in_arrears": true
+    },
+    "operational": {
+      "cut_off_time": "15:00 CET",
+      "instruction_methods": ["swift", "ftp", "portal", "api"],
+      "stp_rate_target": 95,
+      "fail_rate_target": 0.5,
+      "reconciliation_frequency": "daily",
+      "exception_processing": true
+    },
+    "regulatory": {
+      "csdr_compliant": true,
+      "mifid_ii_compliant": true,
+      "emir_reporting": true,
+      "sftr_reporting": true,
+      "aifmd_depositary": true,
+      "ucits_depositary": true
+    },
+    "technology": {
+      "platform": "SSI_Global",
+      "connectivity": ["swift", "sftp", "api"],
+      "api_available": true,
+      "straight_through_processing": true,
+      "automated_reconciliation": true,
+      "portal_access": true
+    },
+    "risk_controls": {
+      "pre_settlement_matching": true,
+      "settlement_fails_monitoring": true,
+      "overdraft_monitoring": true,
+      "credit_limits": true,
+      "transaction_limits": true,
+      "suspicious_activity_monitoring": true
+    },
+    "documentation_required": [
+      "custody_agreement",
+      "account_opening_form",
+      "authorized_signatories",
+      "swift_details",
+      "settlement_instructions",
+      "fee_schedule_acknowledgement"
+    ],
+    "sla": {
+      "instruction_processing": "same_day",
+      "settlement_accuracy": 99.5,
+      "corporate_action_notification": "T-5",
+      "query_response_time_hours": 4,
+      "system_availability": 99.9
+    }
+  }
+}

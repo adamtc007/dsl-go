@@ -1,0 +1,89 @@
+{
+  "id": "le:investment-mgr-001",
+  "name": "Global Alpha Investment Management S.A.",
+  "role": "investment-manager",
+  "entity_type": "LegalEntity",
+  "lei": "5493001KJTIIGC8Y1R12",
+  "country": "LU",
+  "attributes": {
+    "legal_name": "Global Alpha Investment Management S.A.",
+    "short_name": "Global Alpha",
+    "registration_number": "B234567",
+    "incorporation_date": "2008-03-15",
+    "jurisdiction": "Luxembourg",
+    "registered_address": {
+      "street": "12 Avenue de la Liberté",
+      "city": "Luxembourg",
+      "postal_code": "L-1930",
+      "country": "LU"
+    },
+    "business_address": {
+      "street": "12 Avenue de la Liberté",
+      "city": "Luxembourg",
+      "postal_code": "L-1930",
+      "country": "LU"
+    },
+    "contact": {
+      "email": "compliance@globalalpha.lu",
+      "phone": "+352 26 12 34 56",
+      "website": "https://www.globalalpha.lu"
+    },
+    "regulatory": {
+      "regulated": true,
+      "regulator": "CSSF",
+      "license_number": "A00001234",
+      "license_type": "Chapter 15 Management Company",
+      "license_date": "2008-06-01",
+      "passporting": ["DE", "FR", "BE", "NL"]
+    },
+    "business": {
+      "aum": "12500000000",
+      "aum_currency": "EUR",
+      "client_count": 150,
+      "employee_count": 85,
+      "main_strategies": ["equity-long-only", "fixed-income", "multi-asset"],
+      "target_markets": ["institutional", "wholesale"],
+      "ucits_provider": true,
+      "aif_provider": true
+    },
+    "ownership": {
+      "ownership_structure": "private",
+      "ultimate_beneficial_owners": [
+        {
+          "name": "Jean-Pierre Dubois",
+          "ownership_percentage": 45.0,
+          "nationality": "LU",
+          "pep": false
+        },
+        {
+          "name": "Marie-Claire Laurent",
+          "ownership_percentage": 35.0,
+          "nationality": "FR",
+          "pep": false
+        },
+        {
+          "name": "Alpha Holdings SARL",
+          "ownership_percentage": 20.0,
+          "entity_type": "corporate"
+        }
+      ]
+    },
+    "risk_profile": {
+      "risk_tier": "medium",
+      "kyc_level": "enhanced",
+      "pep_exposure": false,
+      "high_risk_jurisdictions": false,
+      "adverse_media": false,
+      "sanctions_screening": "clear"
+    },
+    "documents_provided": [
+      "certificate_of_incorporation",
+      "articles_of_association",
+      "commercial_register_extract",
+      "cssf_license",
+      "beneficial_ownership_register",
+      "audited_financials_2023",
+      "professional_indemnity_insurance"
+    ]
+  }
+}

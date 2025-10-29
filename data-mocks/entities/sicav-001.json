@@ -1,0 +1,285 @@
+{
+  "id": "le:sicav-global-equity-001",
+  "name": "Global Equity Opportunities SICAV",
+  "role": "sicav",
+  "entity_type": "LegalEntity",
+  "lei": "222100SICAV123456789",
+  "country": "LU",
+  "attributes": {
+    "legal_name": "Global Equity Opportunities SICAV",
+    "short_name": "GEO SICAV",
+    "legal_form": "SICAV",
+    "registration_number": "B187654",
+    "incorporation_date": "2015-06-01",
+    "jurisdiction": "Luxembourg",
+    "registered_address": {
+      "street": "33 Rue de Gasperich",
+      "city": "Luxembourg",
+      "postal_code": "L-5826",
+      "country": "LU"
+    },
+    "contact": {
+      "email": "info@geosicav.lu",
+      "phone": "+352 24 56 78 90",
+      "website": "https://www.geosicav.lu"
+    },
+    "regulatory": {
+      "regulated": true,
+      "regulator": "CSSF",
+      "cssf_registration": "B187654",
+      "fund_type": "UCITS",
+      "ucits_compliant": true,
+      "ucits_version": "UCITS V",
+      "registration_date": "2015-08-15",
+      "authorized_countries": [
+        "LU", "DE", "FR", "BE", "NL", "AT", "IT", "ES", "UK", "CH"
+      ],
+      "mifid_classification": "complex",
+      "eligible_counterparties": false,
+      "professional_clients": true,
+      "retail_clients": true
+    },
+    "structure": {
+      "umbrella_structure": true,
+      "multi_class": true,
+      "total_sub_funds": 4,
+      "sub_funds": [
+        {
+          "id": "subfund:geo-global-equity",
+          "name": "Global Equity Opportunities - Global Equity Fund",
+          "isin_acc_eur": "LU1234567890",
+          "isin_dist_eur": "LU1234567891",
+          "isin_acc_usd": "LU1234567892",
+          "launch_date": "2015-08-15",
+          "currency": "EUR",
+          "nav_frequency": "daily"
+        },
+        {
+          "id": "subfund:geo-emerging-markets",
+          "name": "Global Equity Opportunities - Emerging Markets Fund",
+          "isin_acc_eur": "LU1234567893",
+          "isin_dist_usd": "LU1234567894",
+          "launch_date": "2016-03-01",
+          "currency": "USD",
+          "nav_frequency": "daily"
+        },
+        {
+          "id": "subfund:geo-sustainable-equity",
+          "name": "Global Equity Opportunities - Sustainable Equity Fund",
+          "isin_acc_eur": "LU1234567895",
+          "launch_date": "2020-01-15",
+          "currency": "EUR",
+          "nav_frequency": "daily",
+          "sfdr_classification": "Article 9"
+        },
+        {
+          "id": "subfund:geo-dividend-income",
+          "name": "Global Equity Opportunities - Dividend Income Fund",
+          "isin_dist_eur": "LU1234567896",
+          "isin_dist_gbp": "LU1234567897",
+          "launch_date": "2017-09-01",
+          "currency": "EUR",
+          "nav_frequency": "daily"
+        }
+      ],
+      "share_classes": [
+        "Class A (Retail)",
+        "Class I (Institutional)",
+        "Class R (Restricted)",
+        "Class Z (Zero Fee)"
+      ]
+    },
+    "business": {
+      "total_aum": "2400000000",
+      "aum_currency": "EUR",
+      "shareholder_count": 8500,
+      "minimum_initial_subscription": {
+        "class_a": 1000,
+        "class_i": 1000000,
+        "class_r": 5000,
+        "class_z": 10000000
+      },
+      "dealing_frequency": "daily",
+      "dealing_cut_off": "15:00 CET",
+      "settlement": "T+3",
+      "distribution_policy": {
+        "acc_shares": "accumulating",
+        "dist_shares": "annual_distribution"
+      }
+    },
+    "service_providers": {
+      "management_company": {
+        "name": "Global Alpha Investment Management S.A.",
+        "lei": "5493001KJTIIGC8Y1R12",
+        "approval_date": "2015-06-01"
+      },
+      "depositary": {
+        "name": "BNP Paribas Securities Services Luxembourg",
+        "lei": "BNPP0000DEPOSITARY1",
+        "appointment_date": "2015-06-01"
+      },
+      "central_administrator": {
+        "name": "European Fund Administration S.A.",
+        "services": [
+          "fund_accounting",
+          "nav_calculation",
+          "financial_reporting"
+        ]
+      },
+      "transfer_agent": {
+        "name": "European Fund Administration S.A.",
+        "services": [
+          "register_maintenance",
+          "subscription_redemption_processing",
+          "dividend_payments"
+        ]
+      },
+      "auditor": {
+        "name": "PricewaterhouseCoopers",
+        "appointment_date": "2015-06-01"
+      },
+      "legal_counsel": {
+        "name": "Arendt & Medernach",
+        "jurisdiction": "Luxembourg"
+      },
+      "investment_manager": {
+        "name": "Global Alpha Investment Management S.A.",
+        "lei": "5493001KJTIIGC8Y1R12",
+        "delegation_date": "2015-06-01"
+      },
+      "distributor": {
+        "name": "Global Alpha Investment Management S.A.",
+        "distribution_countries": [
+          "LU", "DE", "FR", "BE", "NL", "AT", "IT", "ES"
+        ]
+      }
+    },
+    "governance": {
+      "board_of_directors": [
+        {
+          "name": "Dr. Klaus Mueller",
+          "title": "Chairman",
+          "independent": true,
+          "nationality": "DE",
+          "appointment_date": "2015-06-01"
+        },
+        {
+          "name": "Sophie Leclerc",
+          "title": "Director",
+          "independent": true,
+          "nationality": "FR",
+          "appointment_date": "2015-06-01"
+        },
+        {
+          "name": "Jean-Pierre Dubois",
+          "title": "Director",
+          "independent": false,
+          "nationality": "LU",
+          "appointment_date": "2015-06-01",
+          "affiliated_with": "management_company"
+        }
+      ],
+      "conducting_officers": [
+        {
+          "name": "Marie-Claire Laurent",
+          "role": "conducting_officer_a",
+          "cssf_approved": true
+        },
+        {
+          "name": "Thomas Schneider",
+          "role": "conducting_officer_b",
+          "cssf_approved": true
+        }
+      ]
+    },
+    "investment_strategy": {
+      "primary_strategy": "global_equity",
+      "investment_approach": "actively_managed",
+      "benchmark": "MSCI World Index",
+      "geographic_focus": "global",
+      "sector_focus": "diversified",
+      "use_of_derivatives": true,
+      "derivatives_purpose": [
+        "hedging",
+        "efficient_portfolio_management"
+      ],
+      "securities_lending": true,
+      "esg_integration": true,
+      "sfdr_entity_classification": "Article 8"
+    },
+    "fees": {
+      "management_fee": {
+        "class_a": 1.5,
+        "class_i": 0.75,
+        "class_r": 1.0,
+        "class_z": 0.0
+      },
+      "performance_fee": {
+        "applicable": true,
+        "rate": 20.0,
+        "hurdle_rate": 0.0,
+        "high_water_mark": true
+      },
+      "subscription_fee": {
+        "max": 5.0,
+        "typical": 3.0
+      },
+      "redemption_fee": {
+        "applicable": false
+      },
+      "ongoing_charges": {
+        "class_a": 1.85,
+        "class_i": 1.10
+      }
+    },
+    "risk_profile": {
+      "risk_tier": "medium",
+      "kyc_level": "standard",
+      "srri": 6,
+      "leverage_limit": "200%",
+      "liquidity_risk": "low",
+      "counterparty_risk": "medium",
+      "pep_exposure": false,
+      "high_risk_jurisdictions": false,
+      "adverse_media": false,
+      "sanctions_screening": "clear",
+      "aml_procedures": "established"
+    },
+    "tax": {
+      "luxembourg_tax_status": "exempt",
+      "withholding_tax": "0%",
+      "eu_savings_directive": "compliant",
+      "fatca_giin": "ABC123.99999.SL.442",
+      "crs_compliant": true,
+      "us_persons_allowed": false,
+      "erisa_plan_assets": false
+    },
+    "documents_provided": [
+      "articles_of_incorporation",
+      "cssf_approval_letter",
+      "prospectus_current",
+      "kiid_all_share_classes",
+      "depositary_agreement",
+      "management_company_agreement",
+      "investment_management_agreement",
+      "administration_agreement",
+      "audited_annual_report_2023",
+      "semi_annual_report_2023",
+      "board_resolutions",
+      "aml_kyc_procedures",
+      "sfdr_disclosures",
+      "esg_policy"
+    ],
+    "operational": {
+      "nav_calculation_time": "close_of_business",
+      "valuation_point": "16:00 CET",
+      "nav_publication": "next_business_day",
+      "subscription_settlement": "T+3",
+      "redemption_settlement": "T+3",
+      "swing_pricing": true,
+      "anti_dilution_levy": false,
+      "side_pockets": false,
+      "gates": false
+    }
+  }
+}

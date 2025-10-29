@@ -1,0 +1,137 @@
+{
+  "id": "le:asset-owner-pension-001",
+  "name": "United Manufacturing Workers Pension Fund",
+  "role": "asset-owner",
+  "entity_type": "LegalEntity",
+  "lei": "549300PENSION12345",
+  "country": "US",
+  "attributes": {
+    "legal_name": "United Manufacturing Workers Pension Fund",
+    "short_name": "UMWPF",
+    "entity_subtype": "defined-benefit-pension",
+    "registration_number": "EIN 12-3456789",
+    "inception_date": "1985-01-01",
+    "jurisdiction": "Delaware",
+    "registered_address": {
+      "street": "450 Market Street, Suite 2800",
+      "city": "San Francisco",
+      "state": "CA",
+      "postal_code": "94102",
+      "country": "US"
+    },
+    "business_address": {
+      "street": "450 Market Street, Suite 2800",
+      "city": "San Francisco",
+      "state": "CA",
+      "postal_code": "94102",
+      "country": "US"
+    },
+    "contact": {
+      "email": "trustees@umwpf.org",
+      "phone": "+1 415 555 0123",
+      "website": "https://www.umwpf.org"
+    },
+    "regulatory": {
+      "regulated": true,
+      "regulator": "DOL",
+      "erisa_plan": true,
+      "plan_number": "001",
+      "sponsor_ein": "98-7654321",
+      "irs_determination_letter": true,
+      "pbgc_covered": true,
+      "filing_status": "current"
+    },
+    "business": {
+      "assets_under_management": "8500000000",
+      "aum_currency": "USD",
+      "plan_type": "multi-employer",
+      "participant_count": 45000,
+      "active_members": 28000,
+      "retired_members": 15000,
+      "deferred_members": 2000,
+      "contributing_employers": 150,
+      "funded_ratio": 87.5,
+      "target_allocation": {
+        "public_equity": 45,
+        "fixed_income": 30,
+        "private_equity": 10,
+        "real_estate": 8,
+        "hedge_funds": 5,
+        "cash": 2
+      }
+    },
+    "governance": {
+      "board_of_trustees": [
+        {
+          "name": "Robert Johnson",
+          "title": "Chairman",
+          "appointment_date": "2020-01-01",
+          "term_expires": "2025-12-31"
+        },
+        {
+          "name": "Patricia Williams",
+          "title": "Trustee",
+          "appointment_date": "2021-06-01",
+          "term_expires": "2026-05-31"
+        },
+        {
+          "name": "Michael Chen",
+          "title": "Trustee",
+          "appointment_date": "2019-03-01",
+          "term_expires": "2024-02-28"
+        }
+      ],
+      "investment_consultant": "Mercer Investment Consulting",
+      "actuary": "Milliman Inc.",
+      "legal_counsel": "Morgan, Lewis & Bockius LLP",
+      "custodian_bank": "State Street Bank"
+    },
+    "investment_guidelines": {
+      "investment_policy_statement_date": "2024-01-15",
+      "esg_policy": true,
+      "prohibited_investments": [
+        "tobacco",
+        "controversial_weapons",
+        "thermal_coal"
+      ],
+      "currency_hedging": true,
+      "derivatives_allowed": true,
+      "leverage_limit_percent": 10,
+      "concentration_limit_single_issuer": 5
+    },
+    "risk_profile": {
+      "risk_tier": "low",
+      "kyc_level": "standard",
+      "institutional_client": true,
+      "pep_exposure": false,
+      "high_risk_jurisdictions": false,
+      "adverse_media": false,
+      "sanctions_screening": "clear",
+      "fatca_status": "exempt-beneficial-owner",
+      "crs_reportable": false
+    },
+    "documents_provided": [
+      "trust_agreement",
+      "irs_determination_letter",
+      "form_5500_annual_return_2023",
+      "investment_policy_statement",
+      "board_resolution_authorizing_investment",
+      "trustee_certifications",
+      "audited_financials_2023",
+      "actuarial_valuation_2023",
+      "fidelity_bond",
+      "w9_form"
+    ],
+    "operational": {
+      "contribution_frequency": "monthly",
+      "valuation_frequency": "daily",
+      "reporting_requirements": [
+        "quarterly_performance",
+        "annual_audited_statements",
+        "form_5500",
+        "pbgc_premium_filing"
+      ],
+      "subscription_redemption": "not_applicable"
+    }
+  }
+}
