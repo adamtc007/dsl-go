@@ -1,0 +1,12 @@
+{
+  "id": "le:family-office-prestige",
+  "name": "Prestige Family Office",
+  "role": "asset-owner",
+  "entity_type": "LegalEntity",
+  "lei": "549300FAMOFFICE12345",
+  "country": "CH",
+  "attributes": {
+    "net_worth": "1000000000",
+    "investment_strategy": "long-term-growth"
+  }
+}

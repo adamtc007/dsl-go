@@ -1,0 +1,29 @@
+{
+  "request_id": "onboard-family-office-2024-q4-001",
+  "tenant_id": "default",
+  "entities": [
+    {
+      "id": "le:family-office-prestige",
+      "name": "Prestige Family Office",
+      "role": "asset-owner",
+      "entity_type": "LegalEntity",
+      "lei": "549300FAMOFFICE12345",
+      "country": "CH",
+      "attributes": {
+        "net_worth": "1000000000",
+        "investment_strategy": "long-term-growth"
+      }
+    }
+  ],
+  "products": [
+    {
+      "id": "prod:alternatives-pe-001",
+      "product_type": "Alternatives",
+      "config": {
+        "investment_type": "private-equity",
+        "commitment_amount": "10000000"
+      }
+    }
+  ],
+  "resources": []
+}

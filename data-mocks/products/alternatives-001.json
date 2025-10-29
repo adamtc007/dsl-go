@@ -1,0 +1,8 @@
+{
+  "id": "prod:alternatives-pe-001",
+  "product_type": "Alternatives",
+  "config": {
+    "investment_type": "private-equity",
+    "commitment_amount": "10000000"
+  }
+}
