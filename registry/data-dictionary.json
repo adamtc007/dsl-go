@@ -1,27 +1,160 @@
-[
-  {
-    "AttributeID": "legal_name",
-    "Description": "The full legal name of the entity as it appears on official documents. This should not be an abbreviation or a trade name.",
-    "VectorID": "entity_name"
-  },
-  {
-    "AttributeID": "trade_name",
-    "Description": "The name under which the entity conducts business, if different from its legal name. Also known as a 'doing business as' (DBA) name.",
-    "VectorID": "entity_name"
-  },
-  {
-    "AttributeID": "country_of_incorporation",
-    "Description": "The country in which the entity is legally registered. This should be an ISO 3166-1 alpha-2 country code (e.g., US, GB, DE).",
-    "VectorID": "entity_jurisdiction"
-  },
-  {
-    "AttributeID": "lei_code",
-    "Description": "The Legal Entity Identifier (LEI) of the entity. This is a 20-character, alpha-numeric code that connects to key reference information that enables clear and unique identification of legal entities participating in financial transactions.",
-    "VectorID": "entity_identifier"
-  },
-  {
-    "AttributeID": "bic_code",
-    "Description": "The Business Identifier Code (BIC), also known as SWIFT-BIC, is a standard format of Business Identifier Codes approved by the International Organization for Standardization (ISO). It is a unique identification code for both financial and non-financial institutions.",
-    "VectorID": "entity_identifier"
-  }
-]
+{
+  "products": [
+    {
+      "ProductID": "Custody",
+      "Description": "Core custody and safekeeping services for client assets.",
+      "ServiceIDs": [
+        "Safekeeping",
+        "Reconciliation",
+        "TradeAndInstructionCapture",
+        "RegulatoryReporting"
+      ]
+    },
+    {
+      "ProductID": "FundAccounting",
+      "Description": "Comprehensive fund accounting services for calculating and reporting fund value.",
+      "ServiceIDs": [
+        "Reconciliation",
+        "NAVCalculation",
+        "CapstockAutomation",
+        "Pricing",
+        "FinancialAccounting",
+        "TradeAndInstructionCapture"
+      ]
+    },
+    {
+      "ProductID": "TransferAgency",
+      "Description": "Services related to managing the registry of investors in a fund.",
+      "ServiceIDs": [
+        "InvestorRegistration",
+        "ContractNoteCreation",
+        "ShareTrading"
+      ]
+    },
+    {
+      "ProductID": "FXMarkets",
+      "Description": "Services for trading foreign exchange.",
+      "ServiceIDs": ["AutomatedFXTrading", "NegotiatedFXTrading"]
+    }
+  ],
+  "services": [
+    {
+      "ServiceID": "Safekeeping",
+      "Description": "Core safekeeping of client assets in a secure environment.",
+      "ResourceIDs": ["settlement-engine"]
+    },
+    {
+      "ServiceID": "Reconciliation",
+      "Description": "Reconciliation of cash and securities positions against custodian and broker records.",
+      "ResourceIDs": ["settlement-engine", "reporting-db"]
+    },
+    {
+      "ServiceID": "TradeAndInstructionCapture",
+      "Description": "Capturing and processing of trade and other instructions.",
+      "ResourceIDs": ["settlement-engine"]
+    },
+    {
+      "ServiceID": "RegulatoryReporting",
+      "Description": "Generation and submission of regulatory reports.",
+      "ResourceIDs": ["reporting-db"]
+    },
+    {
+      "ServiceID": "NAVCalculation",
+      "Description": "Calculation of the Net Asset Value (NAV) of a fund on a periodic basis.",
+      "ResourceIDs": ["nav-engine"]
+    },
+    {
+      "ServiceID": "CapstockAutomation",
+      "Description": "Automation of capital stock and share class accounting.",
+      "ResourceIDs": ["nav-engine"]
+    },
+    {
+      "ServiceID": "Pricing",
+      "Description": "Pricing of securities and other assets in a fund.",
+      "ResourceIDs": ["nav-engine"]
+    },
+    {
+      "ServiceID": "FinancialAccounting",
+      "Description": "Maintenance of the fund's financial books and records.",
+      "ResourceIDs": ["reporting-db"]
+    },
+    {
+      "ServiceID": "InvestorRegistration",
+      "Description": "Registration and maintenance of investor details.",
+      "ResourceIDs": ["investor-portal"]
+    },
+    {
+      "ServiceID": "ContractNoteCreation",
+      "Description": "Creation and distribution of contract notes for trades.",
+      "ResourceIDs": ["trade-execution-engine"]
+    },
+    {
+      "ServiceID": "ShareTrading",
+      "Description": "Execution of share trades on behalf of investors.",
+      "ResourceIDs": ["trade-execution-engine"]
+    },
+    {
+      "ServiceID": "AutomatedFXTrading",
+      "Description": "Automated execution of FX trades based on pre-defined rules.",
+      "ResourceIDs": ["fx-trading-platform"]
+    },
+    {
+      "ServiceID": "NegotiatedFXTrading",
+      "Description": "Execution of FX trades through a negotiation process with a dealer.",
+      "ResourceIDs": ["fx-trading-platform"]
+    }
+  ],
+  "resources": [
+    {
+      "ResourceID": "settlement-engine",
+      "Description": "Internal system for settling trades and transactions."
+    },
+    {
+      "ResourceID": "reporting-db",
+      "Description": "The database and reporting engine for client and regulatory reports."
+    },
+    {
+      "ResourceID": "nav-engine",
+      "Description": "The system responsible for calculating the Net Asset Value of a fund."
+    },
+    {
+      "ResourceID": "fx-trading-platform",
+      "Description": "The platform used for executing FX trades."
+    },
+    {
+      "ResourceID": "investor-portal",
+      "Description": "The web portal used by investors to manage their accounts."
+    },
+    {
+      "ResourceID": "trade-execution-engine",
+      "Description": "The engine used for executing trades."
+    }
+  ],
+  "attributes": [
+    {
+      "AttributeID": "legal_name",
+      "Description": "The full legal name of the entity as it appears on official documents. This should not be an abbreviation or a trade name.",
+      "VectorID": "entity_name"
+    },
+    {
+      "AttributeID": "trade_name",
+      "Description": "The name under which the entity conducts business, if different from its legal name. Also known as a 'doing business as' (DBA) name.",
+      "VectorID": "entity_name"
+    },
+    {
+      "AttributeID": "country_of_incorporation",
+      "Description": "The country in which the entity is legally registered. This should be an ISO 3166-1 alpha-2 country code (e.g., US, GB, DE).",
+      "VectorID": "entity_jurisdiction"
+    },
+    {
+      "AttributeID": "lei_code",
+      "Description": "The Legal Entity Identifier (LEI) of the entity. This is a 20-character, alpha-numeric code that connects to key reference information that enables clear and unique identification of legal entities participating in financial transactions.",
+      "VectorID": "entity_identifier"
+    },
+    {
+      "AttributeID": "bic_code",
+      "Description": "The Business Identifier Code (BIC), also known as SWIFT-BIC, is a standard format of Business Identifier Codes approved by the International Organization for Standardization (ISO). It is a unique identification code for both financial and non-financial institutions.",
+      "VectorID": "entity_identifier"
+    }
+  ]
+}

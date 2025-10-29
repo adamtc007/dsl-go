@@ -12,6 +12,17 @@ import (
 	"github.com/example/dsl-go/internal/print"
 )
 
+type GenerateResponse struct {
+	RequestID      string    `json:"request_id"`
+	DSL            string    `json:"dsl"`
+	Version        uint64    `json:"version"`
+	Hash           string    `json:"hash"`
+	GeneratedAt    time.Time `json:"generated_at"`
+	EntitiesAdded  int       `json:"entities_added"`
+	ResourcesAdded int       `json:"resources_added"`
+	FlowsGenerated int       `json:"flows_generated"`
+}
+
 // Generator generates populated DSL instances from templates and client data
 type Generator struct {
 	parser parse.Parser

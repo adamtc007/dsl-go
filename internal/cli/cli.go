@@ -167,6 +167,8 @@ func Run() {
 				os.Exit(1)
 			}
 
+			req.DataDictionary = mgr.GetDataDictionary()
+
 			gen, err := generator.New()
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "error creating generator: %v\n", err)

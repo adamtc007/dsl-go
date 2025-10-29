@@ -25,7 +25,7 @@ type Manager struct {
 	store          *storage.FileStore
 	parser         parse.Parser
 	cfg            Config
-	dataDictionary map[string]Attribute
+	dataDictionary *DataDictionary
 }
 
 func New(cfg Config) (*Manager, error) {
@@ -52,22 +52,27 @@ func (m *Manager) LoadDataDictionary() error {
 		return fmt.Errorf("failed to read data dictionary: %w", err)
 	}
 
-	var attributes []Attribute
-	if err := json.Unmarshal(data, &attributes); err != nil {
+	var dict DataDictionary
+	if err := json.Unmarshal(data, &dict); err != nil {
 		return fmt.Errorf("failed to parse data dictionary: %w", err)
 	}
 
-	m.dataDictionary = make(map[string]Attribute)
-	for _, attr := range attributes {
-		m.dataDictionary[attr.AttributeID] = attr
-	}
+	m.dataDictionary = &dict
 
 	return nil
 }
 
+func (m *Manager) GetDataDictionary() *DataDictionary {
+	return m.dataDictionary
+}
+
 func (m *Manager) GetAttribute(id string) (Attribute, bool) {
-	attr, ok := m.dataDictionary[id]
-	return attr, ok
+	for _, attr := range m.dataDictionary.Attributes {
+		if attr.AttributeID == id {
+			return attr, true
+		}
+	}
+	return Attribute{}, false
 }
 
 func (m *Manager) CreateRequest(id string, template string) (version uint64, canonicalHash string, err error) {

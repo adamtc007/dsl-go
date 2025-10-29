@@ -1,6 +1,10 @@
 package generator
 
-import "time"
+import (
+	"time"
+
+	"github.com/example/dsl-go/internal/manager"
+)
 
 // ClientRole represents the role of a client entity in the onboarding
 type ClientRole string
@@ -43,25 +47,14 @@ type ResourceSpec struct {
 
 // GenerateRequest contains all data needed to generate a populated DSL instance
 type GenerateRequest struct {
-	RequestID string                 `json:"request_id"` // Unique onboarding request ID
-	TenantID  string                 `json:"tenant_id"`  // Multi-tenant identifier
-	Entities  []ClientEntity         `json:"entities"`   // Client entities with their roles
-	Products  []ProductSpec          `json:"products"`   // Products being onboarded
-	Resources []ResourceSpec         `json:"resources"`  // Resources to create
-	Metadata  map[string]interface{} `json:"metadata"`   // Additional metadata (supports nested objects)
-	Now       time.Time              `json:"-"`          // The current time, for use in templates
-}
-
-// GenerateResponse contains the generated DSL and metadata
-type GenerateResponse struct {
-	RequestID      string    `json:"request_id"`      // The request ID
-	DSL            string    `json:"dsl"`             // Generated S-expression DSL
-	Version        uint64    `json:"version"`         // Version number (typically 1 for new)
-	Hash           string    `json:"hash"`            // Content hash
-	GeneratedAt    time.Time `json:"generated_at"`    // When it was generated
-	EntitiesAdded  int       `json:"entities_added"`  // Count of entities
-	ResourcesAdded int       `json:"resources_added"` // Count of resources
-	FlowsGenerated int       `json:"flows_generated"` // Count of flows generated
+	RequestID      string                  `json:"request_id"` // Unique onboarding request ID
+	TenantID       string                  `json:"tenant_id"`  // Multi-tenant identifier
+	Entities       []ClientEntity          `json:"entities"`   // Client entities with their roles
+	Products       []ProductSpec           `json:"products"`   // Products being onboarded
+	Resources      []ResourceSpec          `json:"resources"`  // Resources to create
+	Metadata       map[string]interface{}  `json:"metadata"`   // Additional metadata (supports nested objects)
+	Now            time.Time               `json:"-"`          // The current time, for use in templates
+	DataDictionary *manager.DataDictionary `json:"-"`          // The data dictionary
 }
 
 // ValidationError represents an error during validation
@@ -72,4 +65,22 @@ type ValidationError struct {
 
 func (e *ValidationError) Error() string {
 	return e.Field + ": " + e.Message
+}
+
+func (r *GenerateRequest) GetProduct(id string) *manager.Product {
+	for _, p := range r.DataDictionary.Products {
+		if p.ProductID == id {
+			return &p
+		}
+	}
+	return nil
+}
+
+func (r *GenerateRequest) GetService(id string) *manager.Service {
+	for _, s := range r.DataDictionary.Services {
+		if s.ServiceID == id {
+			return &s
+		}
+	}
+	return nil
 }
